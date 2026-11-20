@@ -1,0 +1,253 @@
+:root {
+  --ink: #f3ebe0;
+  --muted: #c9b9a4;
+  --fog: #8aa0aa;
+  --water: #16323b;
+  --deep: #0b1c24;
+  --lantern: #e2a45a;
+  --lantern-dim: #b56a32;
+  --danger: #d36b5e;
+  --ok: #b7c99a;
+  --line: rgba(243, 235, 224, 0.16);
+  --shadow: rgba(0, 0, 0, 0.35);
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgba(226, 164, 90, 0.12), transparent 50%),
+    linear-gradient(180deg, #10242c 0%, var(--deep) 40%, #071217 100%);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Songti TC", "Noto Serif TC", "Source Han Serif TC", serif;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+.boot, .app, .fatal {
+  width: min(430px, 100%);
+  margin: 0 auto;
+  padding: 1.25rem 1.1rem calc(1.5rem + env(safe-area-inset-bottom));
+}
+
+.boot {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  gap: 0.6rem;
+}
+.boot-kicker {
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  color: var(--lantern);
+  font-size: 0.75rem;
+  margin: 0;
+}
+.boot h1 {
+  font-weight: 500;
+  font-size: 1.8rem;
+  margin: 0.2rem 0 0.6rem;
+}
+.boot-status { color: var(--muted); margin: 0; font-size: 0.95rem; }
+.boot-bar {
+  margin: 1rem auto 0;
+  width: 70%;
+  height: 3px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.boot-bar span {
+  display: block;
+  height: 100%;
+  width: 18%;
+  background: var(--lantern);
+  animation: load 1.4s ease-in-out infinite;
+}
+@keyframes load {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(520%); }
+}
+
+.masthead { text-align: center; padding: 0.4rem 0 0.2rem; }
+.series {
+  margin: 0;
+  letter-spacing: 0.55em;
+  text-indent: 0.55em;
+  font-size: 0.72rem;
+  color: var(--lantern);
+}
+.masthead h1 {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.meta, .flavor, .credits, .ending {
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.7;
+}
+.meta { margin: 0; font-size: 0.85rem; }
+.flavor {
+  margin: 0.85rem 0 1rem;
+  font-size: 0.92rem;
+}
+
+.field {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(22, 50, 59, 0.35), rgba(7, 18, 23, 0.8));
+  box-shadow: 0 16px 40px var(--shadow);
+}
+.bank { padding: 0.85rem; display: flex; justify-content: center; gap: 0.7rem; }
+.bank-escort { background: rgba(226, 164, 90, 0.05); }
+.river {
+  height: 52px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 18px, rgba(138, 160, 170, 0.12) 18px 19px),
+    linear-gradient(180deg, rgba(21, 48, 56, 0.3), var(--water));
+  position: relative;
+  overflow: hidden;
+}
+.skiff {
+  position: absolute;
+  width: 34px;
+  height: 10px;
+  border-radius: 10px 16px 16px 10px;
+  background: #2a1c12;
+  top: 18px;
+  left: -40px;
+  animation: drift 7s linear infinite;
+  opacity: 0.7;
+}
+.skiff.delay { animation-delay: 3.4s; top: 28px; width: 26px; }
+@keyframes drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(460px); }
+}
+
+.unit {
+  width: 100%;
+  max-width: 11.5rem;
+  text-align: center;
+  cursor: pointer;
+  padding: 0.35rem 0.2rem 0.55rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+}
+.unit.selected { border-color: var(--lantern); background: rgba(226, 164, 90, 0.08); }
+.unit.down { opacity: 0.42; filter: grayscale(0.4); cursor: default; }
+
+.silhouette {
+  width: 42px;
+  margin: 0 auto 0.4rem;
+  display: block;
+}
+.unit-escort .silhouette {
+  height: 78px;
+  background: linear-gradient(180deg, #d8c4a8, #8c6a45);
+  clip-path: polygon(50% 0, 72% 16%, 68% 28%, 78% 100%, 22% 100%, 32% 28%, 28% 16%);
+}
+.unit-thief .silhouette {
+  height: 58px;
+  background: linear-gradient(180deg, #6d7a80, #2c3336);
+  clip-path: polygon(50% 0, 78% 22%, 70% 100%, 30% 100%, 22% 22%);
+}
+.unit-escort .pole {
+  width: 3px;
+  height: 86px;
+  background: #c9a36a;
+  margin: -86px 0 0 58%;
+  border-radius: 2px;
+}
+
+.unit h2 {
+  margin: 0.15rem 0 0.15rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.unit .hp-label {
+  font-size: 0.72rem;
+  color: var(--fog);
+  margin: 0 0 0.25rem;
+}
+.bar {
+  width: 84%;
+  margin: 0 auto;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(243, 235, 224, 0.12);
+  overflow: hidden;
+}
+.bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--lantern-dim), var(--lantern));
+  width: 100%;
+  transition: width 0.35s ease;
+}
+.unit-thief .bar > span { background: linear-gradient(90deg, #7d4b4b, var(--danger)); }
+
+.log {
+  list-style: none;
+  margin: 0.9rem 0 0.7rem;
+  padding: 0;
+  min-height: 6.5rem;
+  max-height: 7.2rem;
+  overflow: auto;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 0.6rem;
+}
+.log li { margin: 0 0 0.15rem; }
+.log .hit { color: var(--lantern); }
+.log .down { color: var(--danger); }
+
+.controls { display: flex; flex-direction: column; gap: 0.7rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; min-height: 2.4rem; }
+.chip, .btn {
+  font-family: inherit;
+  border: 1px solid var(--line);
+  background: rgba(243, 235, 224, 0.04);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.92rem;
+}
+.chip[disabled], .btn[disabled] { opacity: 0.38; }
+.chip.active { border-color: var(--lantern); color: var(--lantern); }
+.row { display: flex; gap: 0.45rem; }
+.btn { flex: 1; padding: 0.7rem 0.5rem; cursor: pointer; }
+.btn.primary { background: var(--lantern); color: #2b1708; border-color: transparent; font-weight: 600; }
+.btn.ghost { background: transparent; }
+.btn.running { border-color: var(--lantern); color: var(--lantern); }
+
+.ending {
+  margin: 0.9rem 0 0;
+  font-size: 1.15rem;
+  color: var(--ok);
+}
+.ending.loss { color: var(--danger); }
+.credits {
+  margin: 1rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.fatal {
+  color: var(--danger);
+  text-align: center;
+  padding-top: 3rem;
+}
+
+[hidden] { display: none !important; }
