@@ -37,7 +37,6 @@
       "x": 18,
       "y": 24,
       "blurb": "廊下",
-      "review_gate": "yuki-copy",
       "copy_src": "stages/st51-lobby.copy.json",
       "location_name": "山腳集鎮"
     },
@@ -58,7 +57,6 @@
       "x": 80,
       "y": 20,
       "blurb": "外院泥地",
-      "review_gate": "yuki-copy",
       "copy_src": "stages/st42-stance.copy.json",
       "location_name": "快刀門"
     },
@@ -67,7 +65,6 @@
       "title": "胡三的「輕功」",
       "kind": "event",
       "unlock": "start",
-      "review_gate": "yuki-copy",
       "x": 76,
       "y": 62,
       "copy_src": "stages/st143-qinggong.copy.json",

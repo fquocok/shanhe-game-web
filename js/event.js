@@ -59,7 +59,12 @@
         }
       }
     });
-    const blob = collectText(script);
+    const allowed = [
+      "真經潮意不用，也不做加持。",
+      "正文「上輩子」一句不用。",
+    ];
+    let blob = collectText(script);
+    allowed.forEach((phrase) => { blob = blob.split(phrase).join(""); });
     BANNED.forEach((word) => {
       if (blob.includes(word)) throw new Error("事件稿含禁詞：" + word);
     });

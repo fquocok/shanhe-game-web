@@ -1,0 +1,112 @@
+{
+  "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+  "id": "st42-stance",
+  "title": "第一篇的門檻",
+  "location": "快刀門・外院泥地",
+  "chapter": 42,
+  "kind": "training",
+  "credits": "本關為第四十二章的訓練變體。限時按肩與按鈕分段為〔遊戲原創〕，台詞取自第四十二章。真經潮意不用，也不做加持。",
+  "start": "open",
+  "scenes": {
+    "open": {
+      "type": "dialogue",
+      "lines": [
+        {
+          "text": "試用第四日午後。程石把她從鐵匠鋪門口叫到外院練功廊外沿的泥地上。廊內有人扎馬喝斥，廊外只有她與風。"
+        },
+        {
+          "text": "他蹲下，在泥上劃兩道淺痕：「左腳這裡，右腳這裡。膝別鎖死。腰像扛袋，別像折尺。」",
+          "speaker": "程石"
+        }
+      ],
+      "advance": "照著站",
+      "next": "first"
+    },
+    "first": {
+      "type": "dialogue",
+      "lines": [
+        {
+          "text": "她照做。第一回站歪，像秤桿偏了星。"
+        }
+      ],
+      "advance": "再站一次",
+      "next": "second"
+    },
+    "second": {
+      "type": "dialogue",
+      "lines": [
+        {
+          "text": "第二回站僵，像木牌釘死。"
+        },
+        {
+          "text": "程石伸手點了點她的小腹下方：「息往這兒沉。別提肩。提肩像怕帳不平。」",
+          "speaker": "程石"
+        },
+        {
+          "text": "「我沒——」",
+          "speaker": "阿禾"
+        },
+        {
+          "text": "「你有。數的時候肩也聳。站樁先把肩放下。這是《天刀鍛體法》第一篇裡最淺的皮——站得住，才吃得下三碗。門裡正式傳功不輪到雜役。別對外說是我教的，吳管事會嫌我多事。」",
+          "speaker": "程石"
+        }
+      ],
+      "advance": "把肩放下",
+      "next": "hold"
+    },
+    "hold": {
+      "type": "timed_choice",
+      "prompt": "肩會自己想聳。聳了，就按下去。先站穩一息。",
+      "duration_ms": 8000,
+      "hits_needed": 2,
+      "misses_allowed": 1,
+      "cues": [
+        {
+          "at_ms": 1400,
+          "text": "肩要聳了。",
+          "ok_label": "放下肩",
+          "wait_ms": 1700
+        },
+        {
+          "at_ms": 3800,
+          "text": "又要提肩。",
+          "ok_label": "放下肩",
+          "wait_ms": 1700
+        },
+        {
+          "at_ms": 6000,
+          "text": "肩又自己抬起來。",
+          "ok_label": "按下去",
+          "wait_ms": 1600
+        }
+      ],
+      "success": "held",
+      "fail": "shrug"
+    },
+    "shrug": {
+      "type": "dialogue",
+      "lines": [
+        {
+          "text": "肩又聳了。像怕帳不平。"
+        }
+      ],
+      "advance": "再放下",
+      "next": "hold"
+    },
+    "held": {
+      "type": "ending",
+      "lines": [
+        {
+          "text": "程石看她站穩一息，點頭：「每日炭點完，自己站一柱香。別跟刀弟子搶廊。皮毛夠你少喘兩口。」",
+          "speaker": "程石"
+        },
+        {
+          "text": "第五日清晨，她在炭棚後牆根站了一柱香。肩一次次想聳，又一次次被她按下去。一柱香盡，腿顫。酸著也好——酸證明她站過，不是只聽過「三碗乾飯」的故事。"
+        }
+      ],
+      "closing": "肩放下了（她把「左、右、空一掌」記成另一種記號：先準，再快。）",
+      "result": "STANCE_HELD",
+      "terminal_label": "肩放下了"
+    }
+  }
+}
