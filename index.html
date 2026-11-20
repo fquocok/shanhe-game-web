@@ -13,16 +13,51 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <title>山河武俠・鏢船夜盜</title>
+  <title>山河武俠</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <div id="boot" class="boot" hidden>
     <p class="boot-kicker">山河武俠</p>
-    <h1>霧夜正在靠岸</h1>
-    <p id="boot-status" class="boot-status">正在載入戰鬥引擎…</p>
+    <h1 id="boot-title">霧夜正在靠岸</h1>
+    <p id="boot-status" class="boot-status">正在載入…</p>
     <div class="boot-bar"><span id="boot-bar"></span></div>
   </div>
+
+  <section id="map-screen" class="map-screen" hidden>
+    <header class="map-head">
+      <p class="series">山河武俠</p>
+      <h1 id="map-title">青禾渡一帶</h1>
+      <p id="map-sub" class="map-sub">測試用地圖，第 3 期會換成正式地圖。</p>
+    </header>
+    <div id="map-sheet" class="map-sheet" aria-label="青禾渡關卡地圖"></div>
+    <p id="map-toast" class="map-toast" hidden></p>
+    <footer class="map-foot">
+      <button type="button" id="btn-reset-save" class="btn text">重設進度</button>
+      <p class="build-label" hidden></p>
+    </footer>
+  </section>
+
+  <section id="tutorial-screen" class="tutorial-screen" hidden>
+    <header class="masthead">
+      <div class="mast-left">
+        <p class="series">山河武俠</p>
+        <h1 id="tutorial-title">學那一腳</h1>
+      </div>
+      <p id="tutorial-meta" class="meta">青禾渡岸上</p>
+    </header>
+    <div id="tutorial-beats" class="tutorial-page"></div>
+    <p id="tutorial-end" class="ending" hidden></p>
+    <p id="tutorial-credits" class="credits"></p>
+    <section class="controls">
+      <div class="row">
+        <button type="button" id="tutorial-action" class="btn seal">試那一腳</button>
+        <div class="text-actions">
+          <button type="button" id="tutorial-back" class="btn text">回地圖</button>
+        </div>
+      </div>
+    </section>
+  </section>
 
   <main id="app" class="app" hidden>
     <div class="scene" data-slot="backgrounds/qinghedu-barge-night-tall.webp">
@@ -40,8 +75,9 @@
     <p id="flavor" class="flavor"></p>
 
     <section class="field" aria-label="戰場">
-      <article id="ahe-watch" class="ahe" data-slot="portraits/ahe-watch.webp" title="阿禾在岸上旁觀">
+      <article id="ahe-watch" class="ahe" title="阿禾在岸上旁觀">
         <img class="art" data-src="assets/portraits/ahe-watch.webp" alt="阿禾" hidden>
+        <p class="ahe-caption">岸上旁觀・阿禾</p>
       </article>
 
       <div class="bank bank-stern bank-raiders">
@@ -65,6 +101,7 @@
         <div class="text-actions">
           <button type="button" id="btn-auto" class="btn text">自動演示</button>
           <button type="button" id="btn-reset" class="btn text">再來一次</button>
+          <button type="button" id="btn-back-map" class="btn text">回地圖</button>
           <button type="button" id="btn-rig" class="btn text" aria-pressed="false" title="以墨線骨架觀看招式動作">墨線</button>
         </div>
       </div>
@@ -72,8 +109,18 @@
 
     <p id="ending" class="ending" hidden></p>
     <p id="credits" class="credits"></p>
-    <p id="build-label" class="build-label" hidden></p>
+    <p class="build-label" hidden></p>
   </main>
+
+  <div id="confirm" class="confirm" hidden>
+    <div class="confirm-sheet" role="dialog" aria-labelledby="confirm-text">
+      <p id="confirm-text">要重設本地進度嗎？已過關紀錄會清掉。</p>
+      <div class="row">
+        <button type="button" id="confirm-ok" class="btn seal">確定</button>
+        <button type="button" id="confirm-no" class="btn text">取消</button>
+      </div>
+    </div>
+  </div>
 
   <div id="pwa-update" class="pwa-update" hidden>
     <span>有新版本</span>
@@ -82,6 +129,9 @@
   <p id="fatal" class="fatal" hidden></p>
   <script src="js/rig.js"></script>
   <script src="js/motion.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/tutorial.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pwa.js"></script>
 </body>

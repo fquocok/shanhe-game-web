@@ -46,6 +46,8 @@
   function showFatal(message) {
     boot.hidden = true;
     app.hidden = true;
+    if ($("map-screen")) $("map-screen").hidden = true;
+    if ($("tutorial-screen")) $("tutorial-screen").hidden = true;
     fatal.hidden = false;
     fatal.textContent = "載入失敗：" + message;
   }
@@ -559,6 +561,7 @@
       }
       render();
       consumeEvents(state.events || [], wasEnded);
+      if (state.terminal_result && !wasEnded) recordBattleResult(state);
     }
     return payload;
   }
@@ -624,26 +627,194 @@
     };
   }
 
-  boot.hidden = false;
-  const bootStarted = performance.now();
-  const artReady = fetch("assets/manifest.json")
-    .then((res) => res.ok ? res.json() : { files: [] })
-    .then((data) => { artFiles = new Set(data.files || []); })
-    .catch(() => { artFiles = new Set(); });
-  const movesReady = window.ShanheRig
-    ? window.ShanheRig.loadCatalog("assets/moves/catalog.json").catch(() => null)
-    : Promise.resolve(null);
-  Promise.all([artReady, movesReady]).then(() => { hookSceneArt(); return send({ type: "init" }); })
-    .then((ready) => {
+  let manifest = null;
+  let versionInfo = { channel: "private" };
+  let currentStage = null;
+  let engineReady = false;
+  let engineLoading = null;
+  let artMovesReady = null;
+  let battleResultSaved = false;
+
+  function hideScreens() {
+    boot.hidden = true;
+    app.hidden = true;
+    if ($("map-screen")) $("map-screen").hidden = true;
+    if ($("tutorial-screen")) $("tutorial-screen").hidden = true;
+    fatal.hidden = true;
+  }
+
+  function showScreen(id) {
+    hideScreens();
+    if (id === "boot") boot.hidden = false;
+    else if (id === "battle") app.hidden = false;
+    else if (id === "map") $("map-screen").hidden = false;
+    else if (id === "tutorial") $("tutorial-screen").hidden = false;
+  }
+
+  function setHash(path) {
+    const next = "#/" + String(path || "map").replace(/^#\/?/, "");
+    if (location.hash !== next) history.replaceState(null, "", next);
+  }
+
+  function recordBattleResult(battleState) {
+    if (!currentStage || battleResultSaved) return;
+    if (!window.ShanheSave || !battleState || !battleState.terminal_result) return;
+    battleResultSaved = true;
+    window.ShanheSave.recordResult(currentStage.id, {
+      result: battleState.terminal_result,
+      terminal_label: battleState.terminal_label,
+      seed: currentStage.seed,
+      incrementAttempt: false,
+    });
+    if (window.ShanheMap) window.ShanheMap.render();
+  }
+
+  function ensureAssets() {
+    if (artMovesReady) return artMovesReady;
+    const artReady = fetch("assets/manifest.json")
+      .then((res) => res.ok ? res.json() : { files: [] })
+      .then((data) => { artFiles = new Set(data.files || []); })
+      .catch(() => { artFiles = new Set(); });
+    const movesReady = window.ShanheRig
+      ? window.ShanheRig.loadCatalog("assets/moves/catalog.json").catch(() => null)
+      : Promise.resolve(null);
+    artMovesReady = Promise.all([artReady, movesReady]).then(() => hookSceneArt());
+    return artMovesReady;
+  }
+
+  function ensureEngine() {
+    if (engineReady) return Promise.resolve();
+    if (engineLoading) return engineLoading;
+    $("boot-title").textContent = "霧夜正在靠岸";
+    $("boot-status").textContent = "正在安置 Python 執行環境…";
+    const t0 = performance.now();
+    engineLoading = send({ type: "init" }).then((ready) => {
       applyState(ready);
-      return send({ type: "start" });
-    })
-    .then((payload) => {
-      metrics.readyToStartMs = Math.round(performance.now() - bootStarted);
+      engineReady = true;
+      metrics.readyToStartMs = Math.round(performance.now() - t0);
       window.__SHANHE_METRICS__ = metrics;
-      boot.hidden = true;
-      app.hidden = false;
-      applyState(payload);
-    })
-    .catch((error) => showFatal(error.message));
+    });
+    return engineLoading;
+  }
+
+  function showMap() {
+    stopAuto();
+    currentStage = null;
+    if (window.ShanheMap) window.ShanheMap.render();
+    showScreen("map");
+    setHash("map");
+  }
+
+  function enterStage(node) {
+    if (!node) return;
+    currentStage = node;
+    if (window.ShanheSave) window.ShanheSave.recordAttempt(node.id, { last_seed: node.seed });
+    if (node.kind === "tutorial") {
+      enterTutorial(node);
+      return;
+    }
+    enterBattle(node);
+  }
+
+  function enterTutorial(node) {
+    showScreen("tutorial");
+    setHash("stage/" + node.id);
+    window.ShanheTutorial.onFinished = (payload) => {
+      if (window.ShanheSave) {
+        window.ShanheSave.recordResult(node.id, {
+          result: payload.result,
+          terminal_label: payload.terminal_label,
+          incrementAttempt: false,
+        });
+      }
+      if (window.ShanheMap) window.ShanheMap.render();
+    };
+    window.ShanheTutorial.start({ node }).catch((error) => showFatal(error.message));
+  }
+
+  function enterBattle(node) {
+    battleResultSaved = false;
+    showScreen("boot");
+    $("boot-title").textContent = node.title || "霧夜正在靠岸";
+    $("boot-status").textContent = "正在備妥鏢船…";
+    setHash("stage/" + node.id);
+    ensureAssets()
+      .then(() => ensureEngine())
+      .then(() => send({
+        type: "start",
+        encounterId: node.encounter_id || "encounter:shanhe:qinghedu_barge_night_raid",
+      }))
+      .then((payload) => {
+        showScreen("battle");
+        applyState(payload);
+      })
+      .catch((error) => showFatal(error.message));
+  }
+
+  function confirmReset() {
+    const box = $("confirm");
+    if (!box) return;
+    box.hidden = false;
+    const ok = $("confirm-ok");
+    const no = $("confirm-no");
+    const close = () => { box.hidden = true; };
+    ok.onclick = () => {
+      if (window.ShanheSave) window.ShanheSave.reset();
+      if (window.ShanheMap) window.ShanheMap.render();
+      close();
+    };
+    no.onclick = close;
+  }
+
+  function routeFromHash() {
+    const raw = (location.hash || "#/map").replace(/^#\/?/, "");
+    const parts = raw.split("/").filter(Boolean);
+    if (parts[0] === "stage" && parts[1] && manifest) {
+      const node = (manifest.nodes || []).find((n) => n.id === parts[1]);
+      const access = window.ShanheSave
+        ? window.ShanheSave.accessFor(node, window.ShanheSave.load(), versionInfo.channel)
+        : { enterable: false };
+      if (node && access.enterable) {
+        enterStage(node);
+        return;
+      }
+    }
+    showMap();
+  }
+
+  $("btn-back-map").onclick = () => showMap();
+  $("tutorial-back").onclick = () => showMap();
+  $("tutorial-action").onclick = () => window.ShanheTutorial && window.ShanheTutorial.playChoice();
+
+  const bootStarted = performance.now();
+  showScreen("boot");
+  $("boot-title").textContent = "青禾渡一帶";
+  $("boot-status").textContent = "正在展開地圖…";
+
+  Promise.all([
+    fetch("assets/stages/qinghedu.manifest.json").then((res) => {
+      if (!res.ok) throw new Error("關卡清單載入失敗");
+      return res.json();
+    }),
+    fetch("version.json", { cache: "no-store" }).then((res) => res.ok ? res.json() : {}).catch(() => ({})),
+    ensureAssets(),
+  ]).then(([man, ver]) => {
+    manifest = man;
+    versionInfo = ver || {};
+    if (!versionInfo.channel) versionInfo.channel = "private";
+    window.__SHANHE_VERSION__ = versionInfo;
+    window.ShanheMap.mount({
+      manifest,
+      channel: versionInfo.channel,
+      onEnter: enterStage,
+      onResetRequest: confirmReset,
+    });
+    metrics.mapReadyMs = Math.round(performance.now() - bootStarted);
+    window.__SHANHE_METRICS__ = metrics;
+    routeFromHash();
+  }).catch((error) => showFatal(error.message));
+
+  window.addEventListener("hashchange", () => {
+    if (app.hidden && $("tutorial-screen").hidden) routeFromHash();
+  });
 })();

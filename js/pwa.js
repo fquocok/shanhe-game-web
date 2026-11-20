@@ -1,15 +1,17 @@
 (() => {
-  const labelEl = document.getElementById("build-label");
   const toast = document.getElementById("pwa-update");
   const reloadBtn = document.getElementById("pwa-reload");
 
   function showLabel(data) {
-    if (!labelEl || !data) return;
+    if (!data) return;
     const built = String(data.built || "").trim();
     const name = String(data.label || "測試版").trim();
     const rev = String(data.rev || "").trim();
-    labelEl.textContent = [name, rev, built].filter(Boolean).join(" · ");
-    labelEl.hidden = false;
+    const text = [name, rev, built].filter(Boolean).join(" · ");
+    document.querySelectorAll(".build-label").forEach((el) => {
+      el.textContent = text;
+      el.hidden = false;
+    });
   }
 
   fetch("version.json", { cache: "no-store" })

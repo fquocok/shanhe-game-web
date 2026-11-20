@@ -45,7 +45,7 @@ html, body {
 }
 body { min-height: 100dvh; }
 
-.boot, .app, .fatal {
+.boot, .app, .fatal, .map-screen, .tutorial-screen {
   width: min(390px, 100%);
   margin: 0 auto;
   min-height: 100dvh;
@@ -200,20 +200,37 @@ body { min-height: 100dvh; }
 }
 .ahe {
   position: absolute;
-  left: 7%;
-  top: 10%;
-  width: 28px;
-  height: 40px;
+  left: 3%;
+  top: 7%;
+  width: auto;
+  max-width: 36%;
+  height: auto;
   z-index: 3;
-  opacity: 0.7;
+  opacity: 0.95;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
 }
 .ahe .art {
-  width: 100%;
-  height: 100%;
+  width: 28px;
+  height: 40px;
   object-fit: contain;
   object-position: bottom;
   filter: saturate(0.7);
+}
+.ahe-caption {
+  margin: 0;
+  writing-mode: vertical-rl;
+  font-family: var(--font-kai);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--paper-aged);
+  text-shadow: 0 1px 6px rgba(16, 22, 20, 0.95);
+  border-left: 1px solid rgba(201, 181, 154, 0.4);
+  padding: 0.15rem 0.2rem 0.15rem 0.25rem;
+  background: rgba(16, 22, 20, 0.18);
 }
 
 /* 夜盜自船尾舷緣爬上甲板；鏢師站在近處甲板 */
@@ -798,4 +815,218 @@ body { min-height: 100dvh; }
   font-size: 0.9rem;
   letter-spacing: 0.08em;
   cursor: pointer;
+}
+
+
+/* —— 測試地圖（第 3 期會換） —— */
+.map-screen, .tutorial-screen {
+  display: flex;
+  flex-direction: column;
+  padding: calc(0.7rem + env(safe-area-inset-top, 0px)) env(safe-area-inset-right) calc(0.7rem + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left);
+  min-height: 100dvh;
+}
+.map-head, .tutorial-screen .masthead {
+  padding: 0.4rem 0.85rem 0.2rem;
+  flex-shrink: 0;
+}
+.map-head .series {
+  margin: 0;
+  font-family: var(--font-kai);
+  letter-spacing: 0.45em;
+  text-indent: 0.45em;
+  color: var(--lantern);
+  font-size: 0.72rem;
+}
+.map-head h1 {
+  margin: 0.15rem 0 0.2rem;
+  font-family: var(--font-kai);
+  font-weight: 400;
+  font-size: 1.55rem;
+  color: var(--paper);
+}
+.map-sub {
+  margin: 0;
+  color: var(--paper-aged);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.map-sheet {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 360px;
+  margin: 0.55rem 0.65rem;
+  background:
+    linear-gradient(180deg, rgba(231, 216, 196, 0.97), rgba(201, 181, 154, 0.92));
+  color: var(--ink);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(92, 83, 72, 0.25);
+  overflow: hidden;
+}
+.map-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(122, 46, 42, 0.28);
+  pointer-events: none;
+}
+.map-river {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #16333A;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.15rem 0.2rem 0.2rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  touch-action: manipulation;
+  cursor: pointer;
+  z-index: 2;
+}
+.map-seal {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--seal);
+  color: var(--seal);
+  font-family: var(--font-kai);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(243, 230, 216, 0.92);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 6px rgba(28, 24, 20, 0.18);
+}
+.map-node-title {
+  font-family: var(--font-kai);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  white-space: nowrap;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.map-node-status {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.map-node.is-cleared .map-seal {
+  background: #6d2c28;
+  color: #f3e6d8;
+  border-color: #6d2c28;
+}
+.map-node.is-locked .map-seal,
+.map-node.is-preparing .map-seal {
+  border-color: var(--ink-soft);
+  color: var(--ink-soft);
+  background: rgba(201, 181, 154, 0.75);
+  opacity: 0.9;
+}
+.map-node.is-blocked { cursor: default; }
+.map-node.is-open .map-seal {
+  box-shadow: 0 0 0 2px rgba(212, 160, 86, 0.35), 0 2px 6px rgba(28, 24, 20, 0.18);
+}
+.map-toast {
+  margin: 0 0.85rem 0.2rem;
+  min-height: 1.2rem;
+  text-align: center;
+  font-family: var(--font-kai);
+  font-size: 0.88rem;
+  color: var(--lantern);
+}
+.map-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0 0.7rem;
+}
+.map-foot .build-label { margin: 0; text-align: right; flex: 1; }
+
+/* —— 教學關（紙頁，無新立繪） —— */
+.tutorial-screen {
+  background:
+    radial-gradient(900px 420px at 50% -8%, rgba(212, 160, 86, 0.10), transparent 55%),
+    linear-gradient(180deg, #152422 0%, var(--ink-night) 42%, #0a0f0e 100%);
+  color: var(--paper);
+}
+.tutorial-page {
+  flex: 1 1 auto;
+  margin: 0.4rem 0.85rem;
+  padding: 0.85rem 0.9rem;
+  background: linear-gradient(180deg, rgba(231, 216, 196, 0.96), rgba(201, 181, 154, 0.94));
+  color: var(--ink);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+  overflow: auto;
+}
+.tutorial-line {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-song);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+.tutorial-line.just-in { color: var(--seal); }
+.tutorial-screen .controls {
+  padding: 0.4rem 0.7rem 0;
+}
+.tutorial-screen .credits { color: var(--paper-aged); }
+.tutorial-screen .btn.seal {
+  width: auto;
+  min-width: 44px;
+  min-height: 44px;
+  height: auto;
+  flex: 0 0 auto;
+  padding: 0.35rem 0.75rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.ending.comedy { color: var(--lantern); }
+
+/* —— 確認匣 —— */
+.confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(16, 22, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.confirm[hidden] { display: none !important; }
+.confirm-sheet {
+  width: min(320px, 100%);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 1rem 1rem 0.8rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+.confirm-sheet p {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-song);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+.confirm-sheet .row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-line.just-in { color: var(--ink); }
 }

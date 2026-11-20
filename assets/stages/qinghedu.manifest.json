@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_STAGE_MANIFEST_V0_1",
+  "area_id": "qinghedu",
+  "area_name": "青禾渡",
+  "title": "青禾渡一帶",
+  "subtitle": "測試用地圖，第 3 期會換成正式地圖。",
+  "chapter_scope": "1-240",
+  "nodes": [
+    {
+      "id": "st15-escort",
+      "title": "鏢船夜盜",
+      "kind": "battle",
+      "unlock": "start",
+      "x": 28,
+      "y": 62,
+      "encounter_id": "encounter:shanhe:qinghedu_barge_night_raid",
+      "seed": 39,
+      "blurb": "霧夜，船尾。"
+    },
+    {
+      "id": "st15-mud",
+      "title": "學那一腳",
+      "kind": "tutorial",
+      "unlock": "start",
+      "review_gate": "yuki-copy",
+      "x": 66,
+      "y": 44,
+      "copy_src": "stages/tutorial-kick.copy.json",
+      "blurb": "岸上的一課"
+    },
+    {
+      "id": "st51-lobby",
+      "title": "鹿鳴居廊下",
+      "kind": "standoff",
+      "unlock": "locked",
+      "x": 18,
+      "y": 24,
+      "blurb": "未開放"
+    },
+    {
+      "id": "st56-teashop",
+      "title": "茶棚淺青",
+      "kind": "standoff",
+      "unlock": "locked",
+      "x": 50,
+      "y": 16,
+      "blurb": "未開放"
+    },
+    {
+      "id": "st42-stance",
+      "title": "第一篇的門檻",
+      "kind": "training",
+      "unlock": "locked",
+      "x": 80,
+      "y": 20,
+      "blurb": "未開放"
+    }
+  ]
+}

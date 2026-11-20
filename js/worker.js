@@ -49,7 +49,7 @@ self.onmessage = async (event) => {
     }
     if (!ready) throw new Error("引擎尚未就緒");
     const map = {
-      start: () => invoke("start", [WORKSPACE]),
+      start: () => invoke("start", [WORKSPACE, msg.encounterId || "encounter:shanhe:qinghedu_barge_night_raid"]),
       request_auto: () => invoke("request_auto", [Boolean(msg.enabled)]),
       step_auto: () => invoke("step_auto", []),
       play_to_end: () => invoke("play_to_end", [msg.maxCycles || 200]),
