@@ -1,0 +1,106 @@
+{
+  "id": "attack-pole-kick",
+  "title": "一腳",
+  "weapon": "pole",
+  "loop": false,
+  "duration_ms": 540,
+  "contact_ms": 260,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      }
+    },
+    {
+      "t": 0.3,
+      "bones": {
+        "torso": 196,
+        "head": 198,
+        "armL_upper": -24,
+        "armL_lower": -16,
+        "armR_upper": 40,
+        "armR_lower": 20,
+        "legL_upper": 8,
+        "legL_lower": 2,
+        "legR_upper": 70,
+        "legR_lower": 20,
+        "weapon": 200
+      },
+      "root": {
+        "x": -2,
+        "y": 0
+      }
+    },
+    {
+      "t": 0.5,
+      "bones": {
+        "torso": 164,
+        "head": 158,
+        "armL_upper": -40,
+        "armL_lower": -16,
+        "armR_upper": 20,
+        "armR_lower": 16,
+        "legL_upper": 6,
+        "legL_lower": 2,
+        "legR_upper": 98,
+        "legR_lower": 92,
+        "weapon": 188
+      },
+      "root": {
+        "x": 6,
+        "y": -2
+      }
+    },
+    {
+      "t": 0.78,
+      "bones": {
+        "torso": 176,
+        "head": 174,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 12,
+        "legL_lower": 6,
+        "legR_upper": 36,
+        "legR_lower": 16,
+        "weapon": 196
+      },
+      "root": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

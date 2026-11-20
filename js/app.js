@@ -31,7 +31,17 @@
   let battleBegun = false;
   let endedLogged = false;
   const seenEventKeys = new Set();
+  const revealTimers = new Set();
   const metrics = { loadMs: null, zipBytes: null };
+
+  function later(fn, ms) {
+    const id = window.setTimeout(() => { revealTimers.delete(id); fn(); }, ms);
+    revealTimers.add(id);
+  }
+  function cancelReveals() {
+    for (const id of revealTimers) window.clearTimeout(id);
+    revealTimers.clear();
+  }
 
   function showFatal(message) {
     boot.hidden = true;
@@ -221,7 +231,6 @@
     if (!amount) return;
     const heavy = amount >= 60 || details.defeated;
     spawnFloater(targetId, String(amount), "floater" + (heavy ? " heavy" : ""));
-    bumpUnit(targetId);
   }
 
   const SKIP_KINDS = new Set([
@@ -243,15 +252,21 @@
 
     let encounterOver = alreadyEnded || endedLogged;
     const pendingStarts = [];
+    const pendingDownLog = new Set();
+    if (window.ShanheMotion) window.ShanheMotion.beginStep();
 
     const flushStart = (event, fallbackMove) => {
       const actor = nameOf(event.actor_id);
-      const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0];
+      const targetId = (event.target_ids || [])[0];
+      const target = nameOf(targetId);
       const move = fallbackMove || moveFromEvent(event) || "";
-      if (!actor || !target) return;
+      if (!actor || !target) return 0;
       flashSkill(move);
       appendLog(actionLine(actor, move, target));
       battleBegun = true;
+      const family = event.details?.action_presentation_metadata?.weapon_visual_family;
+      if (!window.ShanheMotion) return 0;
+      return window.ShanheMotion.playAttack(event.actor_id, targetId, move, family) || 0;
     };
 
     for (const event of unique) {
@@ -279,29 +294,62 @@
         const details = event.details || {};
         const move = moveFromEvent(event);
         const start = pendingStarts.find((item) => item.actor_id === event.actor_id) || pendingStarts.shift();
+        let contact = 0;
         if (start) {
           pendingStarts.splice(pendingStarts.indexOf(start), 1);
-          flushStart(start, move);
+          contact = flushStart(start, move) || 0;
         } else if (move) {
           flashSkill(move);
         }
-        showDamage(event);
-        const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0] || "對方";
+        const targetId = (event.target_ids || [])[0];
+        const target = nameOf(targetId) || "對方";
         const part = BODY_PARTS[(Number(details.hp_damage) || 0) % BODY_PARTS.length];
         const dodged = Boolean(details.dodged) || kind === "DODGE_CONFIRMED";
         const parried = Boolean(details.parried) || kind === "PARRY_CONFIRMED";
-        if (details.defeated) {
-          // 先寫結實一擊的場上數字，戰報直接收成落水，避免「受創」再「翻落」兩句重複過近
-          appendLog(resultLine(move, target, { dodged, parried, defeated: true, part }), "down");
-        } else {
-          appendLog(resultLine(move, target, { dodged, parried, defeated: false, part }), dodged || parried ? "" : "hit");
+        if (window.ShanheMotion) {
+          const reactId = dodged ? "dodge" : parried ? "block" : "hit";
+          const reactMove = window.ShanheRig?.getMove?.(reactId);
+          window.ShanheMotion.note(contact + (reactMove?.duration_ms || 360));
         }
+        if (details.defeated) pendingDownLog.add(target);
+        const reveal = () => {
+          showDamage(event);
+          if (window.ShanheMotion) {
+            window.ShanheMotion.playReact(targetId, kind, event.actor_id, details);
+          }
+          if (details.defeated) {
+            const node = unitEl(targetId);
+            if (node) {
+              node.classList.add("down");
+              const hp = node.querySelector(".hp-label");
+              if (hp) hp.textContent = "已落水";
+              const bar = node.querySelector(".bar > span");
+              if (bar) bar.style.width = "0%";
+            }
+            if (window.ShanheMotion) window.ShanheMotion.playDown(targetId);
+            appendLog(resultLine(move, target, { dodged, parried, defeated: true, part }), "down");
+          } else {
+            const node = unitEl(targetId);
+            const unit = [...(state?.enemies || []), state?.player].find((item) => item && item.id === targetId);
+            if (node && unit) {
+              const hp = node.querySelector(".hp-label");
+              if (hp) hp.textContent = unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水";
+              const bar = node.querySelector(".bar > span");
+              if (bar && unit.max_hp) bar.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100))}%`;
+            }
+            appendLog(resultLine(move, target, { dodged, parried, defeated: false, part }), dodged || parried ? "" : "hit");
+          }
+        };
+        if (contact > 0) later(reveal, contact);
+        else reveal();
         continue;
       }
 
       if (kind === "DEFEATED" || kind === "COMBATANT_DEFEATED") {
         const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0];
         if (!target) continue;
+        // 落水句已在延後的受創揭示裡寫過，或即將寫，這裡不再重複
+        if (pendingDownLog.has(target)) continue;
         const already = Array.from(logEl.querySelectorAll("li")).some((li) => li.textContent.includes(`${target}氣血耗盡`));
         if (!already) appendLog(`${target}氣血耗盡，翻落江中。`, "down");
         continue;
@@ -325,21 +373,88 @@
     return `第${ch}章・其${t}`;
   }
 
-  function unitHtml(unit, role) {
-    const ratio = unit.max_hp ? Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100)) : 0;
+  function roleOf(id) {
+    if (!state || !id) return "";
+    if (state.player && state.player.id === id) return "escort";
+    const enemies = state.enemies || [];
+    if (enemies[0] && enemies[0].id === id) return "thief-0";
+    if (enemies[1] && enemies[1].id === id) return "thief-1";
+    return "";
+  }
+
+  function unitHtml(unit, role, deferVitals) {
+    const showHp = !deferVitals;
+    const ratio = showHp && unit.max_hp ? Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100)) : 100;
     const src = PORTRAIT_BY_ROLE[role] || "";
     const ink = role === "escort"
       ? '<span class="placeholder placeholder-escort" aria-hidden="true"><i class="pole"></i></span>'
       : '<span class="placeholder placeholder-thief" aria-hidden="true"></span>';
-    return `<div class="portrait">
-        <img class="art" data-src="${src}" alt="" hidden>
-        ${ink}
+    const hpText = !showHp ? "" : (unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水");
+    return `<div class="mover">
+        <div class="portrait">
+          <img class="art" data-src="${src}" alt="" hidden>
+          ${ink}
+          <div class="rig-mount" aria-hidden="true"></div>
+        </div>
       </div>
       <div class="unit-meta">
         <h2>${escapeHtml(unit.name)}</h2>
-        <p class="hp-label">${unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水"}</p>
+        <p class="hp-label">${hpText}</p>
         <div class="bar"><span style="width:${ratio}%"></span></div>
-      </div>`;
+      </div>
+      <span class="tap-hint" hidden>再點一次出手</span>`;
+  }
+
+  const wasAlive = new Map();
+
+  function setUnitChrome(node, base) {
+    const keep = [...node.classList].filter((name) => name.startsWith("mot-"));
+    node.className = base;
+    keep.forEach((name) => node.classList.add(name));
+  }
+
+  function bindUnitTap(node, unit) {
+    node.onclick = () => {
+      if (!state || unit.id === state.player?.id) return;
+      if (!unit.alive || state.terminal_result || autoTimer) return;
+      if (selectedTarget === unit.id && selectedAction) {
+        send({ type: "submit" }).then(applyState).catch(showFatal);
+        return;
+      }
+      selectedTarget = unit.id;
+      send({ type: "select_target", targetId: unit.id }).then(applyState).catch(showFatal);
+    };
+  }
+
+  function syncUnit(node, unit, role) {
+    const justFell = Boolean(wasAlive.get(unit.id) && !unit.alive);
+    const built = node.dataset.builtId === unit.id && node.querySelector(".mover");
+    if (!built) {
+      node.dataset.builtId = unit.id;
+      node.innerHTML = unitHtml(unit, role, justFell);
+      hookPortrait(node);
+      if (window.ShanheMotion) window.ShanheMotion.mountUnit(node, role);
+    } else if (!justFell) {
+      const name = node.querySelector("h2");
+      if (name) name.textContent = unit.name;
+      const hp = node.querySelector(".hp-label");
+      if (hp) hp.textContent = unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水";
+      const bar = node.querySelector(".bar > span");
+      if (bar) {
+        const ratio = unit.max_hp ? Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100)) : 0;
+        bar.style.width = unit.alive ? `${ratio}%` : "0%";
+      }
+    }
+    bindUnitTap(node, unit);
+    if (!justFell) node.classList.toggle("down", !unit.alive);
+    node.classList.toggle("selected", selectedTarget === unit.id);
+    const hint = node.querySelector(".tap-hint");
+    if (hint) {
+      const ready = selectedTarget === unit.id && selectedAction && unit.alive && !state.terminal_result && !autoTimer;
+      hint.hidden = !ready;
+    }
+    if (!unit.alive && !justFell && window.ShanheMotion) window.ShanheMotion.playDown(unit.id);
+    wasAlive.set(unit.id, unit.alive);
   }
 
   function hookPortrait(node) {
@@ -361,9 +476,8 @@
     $("flavor").textContent = state.flavor || "";
     $("credits").textContent = state.credits || "";
 
-    $("player-card").className = "unit unit-escort" + (state.player.alive ? "" : " down") + (selectedTarget === state.player.id ? " selected" : "");
-    $("player-card").innerHTML = unitHtml(state.player, "escort");
-    hookPortrait($("player-card"));
+    setUnitChrome($("player-card"), "unit unit-escort");
+    syncUnit($("player-card"), state.player, "escort");
 
     const enemies = state.enemies || [];
     ["enemy-a", "enemy-b"].forEach((id, index) => {
@@ -375,14 +489,8 @@
       }
       node.hidden = false;
       const variant = index === 0 ? " unit-thief-a" : " unit-thief-b";
-      node.className = "unit unit-thief" + variant + (unit.alive ? "" : " down") + (selectedTarget === unit.id ? " selected" : "");
-      node.innerHTML = unitHtml(unit, "thief-" + index);
-      hookPortrait(node);
-      node.onclick = () => {
-        if (!unit.alive || state.terminal_result || autoTimer) return;
-        selectedTarget = unit.id;
-        send({ type: "select_target", targetId: unit.id }).then(applyState).catch(showFatal);
-      };
+      setUnitChrome(node, "unit unit-thief" + variant);
+      syncUnit(node, unit, "thief-" + index);
     });
 
     const actions = $("actions");
@@ -437,6 +545,15 @@
         battleBegun = false;
         endedLogged = false;
         seenEventKeys.clear();
+        wasAlive.clear();
+        cancelReveals();
+        if (window.ShanheMotion) window.ShanheMotion.reset();
+        ["player-card", "enemy-a", "enemy-b"].forEach((id) => {
+          const node = $(id);
+          if (!node) return;
+          delete node.dataset.builtId;
+          node.classList.remove("mot-idle", "mot-attack", "mot-hit", "mot-dodge", "mot-block", "selected", "down");
+        });
         $("flavor").classList.remove("compact");
         stopAuto();
       }
@@ -462,7 +579,8 @@
         render();
         return;
       }
-      autoTimer = setTimeout(stepAutoLoop, 900);
+      const wait = Math.max(760, (window.ShanheMotion?.lastDuration() || 0) + 140);
+      autoTimer = setTimeout(stepAutoLoop, wait);
     }).catch((error) => {
       stopAuto();
       showFatal(error.message);
@@ -489,13 +607,33 @@
     send({ type: "reset" }).then(applyState).catch(showFatal);
   };
 
+  if (window.ShanheRig && window.matchMedia) {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyReduced = () => window.ShanheRig.setReduced(media.matches);
+    applyReduced();
+    if (media.addEventListener) media.addEventListener("change", applyReduced);
+  }
+  if (window.ShanheMotion) window.ShanheMotion.configure({ unitEl, roleOf });
+
+  const rigBtn = $("btn-rig");
+  if (rigBtn) {
+    rigBtn.onclick = () => {
+      const on = app.classList.toggle("show-rig");
+      rigBtn.classList.toggle("active", on);
+      rigBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    };
+  }
+
   boot.hidden = false;
   const bootStarted = performance.now();
   const artReady = fetch("assets/manifest.json")
     .then((res) => res.ok ? res.json() : { files: [] })
     .then((data) => { artFiles = new Set(data.files || []); })
     .catch(() => { artFiles = new Set(); });
-  artReady.then(() => { hookSceneArt(); return send({ type: "init" }); })
+  const movesReady = window.ShanheRig
+    ? window.ShanheRig.loadCatalog("assets/moves/catalog.json").catch(() => null)
+    : Promise.resolve(null);
+  Promise.all([artReady, movesReady]).then(() => { hookSceneArt(); return send({ type: "init" }); })
     .then((ready) => {
       applyState(ready);
       return send({ type: "start" });

@@ -1,0 +1,106 @@
+{
+  "id": "attack-hidden",
+  "title": "撲上／暗器",
+  "weapon": "hidden",
+  "loop": false,
+  "duration_ms": 500,
+  "contact_ms": 230,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 40
+      }
+    },
+    {
+      "t": 0.28,
+      "bones": {
+        "torso": 196,
+        "head": 200,
+        "armL_upper": 10,
+        "armL_lower": 40,
+        "armR_upper": 50,
+        "armR_lower": 80,
+        "legL_upper": 22,
+        "legL_lower": 16,
+        "legR_upper": -26,
+        "legR_lower": 4,
+        "weapon": 90
+      },
+      "root": {
+        "x": -3,
+        "y": 3
+      }
+    },
+    {
+      "t": 0.46,
+      "bones": {
+        "torso": 150,
+        "head": 142,
+        "armL_upper": 70,
+        "armL_lower": 80,
+        "armR_upper": 90,
+        "armR_lower": 96,
+        "legL_upper": 34,
+        "legL_lower": 14,
+        "legR_upper": -6,
+        "legR_lower": -2,
+        "weapon": 100
+      },
+      "root": {
+        "x": 9,
+        "y": -3
+      }
+    },
+    {
+      "t": 0.76,
+      "bones": {
+        "torso": 170,
+        "head": 166,
+        "armL_upper": -10,
+        "armL_lower": -16,
+        "armR_upper": 40,
+        "armR_lower": 16,
+        "legL_upper": 18,
+        "legL_lower": 6,
+        "legR_upper": -12,
+        "legR_lower": -6,
+        "weapon": 50
+      },
+      "root": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 40
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

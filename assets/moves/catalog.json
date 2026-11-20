@@ -1,0 +1,49 @@
+{
+  "contract": "SHANHE_MOVE_CATALOG_V1",
+  "comment": "呈現事件對應到招式動作檔。畫面只消費呈現事件，不重算傷害。",
+  "default_weapon_by_role": {
+    "escort": "pole",
+    "thief-0": "hidden",
+    "thief-1": "hidden"
+  },
+  "weapon_by_family": {
+    "槍法": "pole",
+    "杆法": "pole",
+    "棍法": "staff",
+    "刀法": "blade",
+    "劍法": "blade",
+    "拳法": "hidden",
+    "暗器": "hidden"
+  },
+  "files": [
+    "idle.json",
+    "attack-pole.json",
+    "attack-pole-kick.json",
+    "attack-pole-sweep.json",
+    "attack-pole-parry.json",
+    "attack-blade.json",
+    "attack-staff.json",
+    "attack-hidden.json",
+    "hit.json",
+    "dodge.json",
+    "block.json"
+  ],
+  "by_move_name": {
+    "一腳": "attack-pole-kick",
+    "一甩": "attack-pole-sweep",
+    "一撥": "attack-pole-parry",
+    "撲上": "attack-hidden"
+  },
+  "fallback_attack": {
+    "pole": "attack-pole",
+    "blade": "attack-blade",
+    "staff": "attack-staff",
+    "hidden": "attack-hidden"
+  },
+  "by_event": {
+    "HIT_CONFIRMED": "hit",
+    "DAMAGE_APPLIED": "hit",
+    "DODGE_CONFIRMED": "dodge",
+    "PARRY_CONFIRMED": "block"
+  }
+}

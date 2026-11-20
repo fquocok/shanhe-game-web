@@ -1,0 +1,106 @@
+{
+  "id": "attack-pole-parry",
+  "title": "一撥",
+  "weapon": "pole",
+  "loop": false,
+  "duration_ms": 480,
+  "contact_ms": 220,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      }
+    },
+    {
+      "t": 0.28,
+      "bones": {
+        "torso": 188,
+        "head": 184,
+        "armL_upper": -20,
+        "armL_lower": -8,
+        "armR_upper": 130,
+        "armR_lower": 90,
+        "legL_upper": 16,
+        "legL_lower": 6,
+        "legR_upper": -22,
+        "legR_lower": -4,
+        "weapon": 70
+      },
+      "root": {
+        "x": -2,
+        "y": 1
+      }
+    },
+    {
+      "t": 0.46,
+      "bones": {
+        "torso": 158,
+        "head": 152,
+        "armL_upper": -46,
+        "armL_lower": -18,
+        "armR_upper": 100,
+        "armR_lower": 80,
+        "legL_upper": 28,
+        "legL_lower": 10,
+        "legR_upper": -8,
+        "legR_lower": -4,
+        "weapon": 74
+      },
+      "root": {
+        "x": 8,
+        "y": -2
+      }
+    },
+    {
+      "t": 0.76,
+      "bones": {
+        "torso": 174,
+        "head": 170,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 50,
+        "armR_lower": 30,
+        "legL_upper": 16,
+        "legL_lower": 6,
+        "legR_upper": -12,
+        "legR_lower": -6,
+        "weapon": 44
+      },
+      "root": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

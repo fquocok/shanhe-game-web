@@ -1,0 +1,86 @@
+{
+  "id": "block",
+  "title": "架開",
+  "weapon": null,
+  "loop": false,
+  "duration_ms": 380,
+  "contact_ms": 40,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      }
+    },
+    {
+      "t": 0.22,
+      "bones": {
+        "torso": 188,
+        "head": 184,
+        "armL_upper": 20,
+        "armL_lower": 70,
+        "armR_upper": 100,
+        "armR_lower": 70,
+        "legL_upper": 20,
+        "legL_lower": 14,
+        "legR_upper": -22,
+        "legR_lower": 8,
+        "weapon": 80
+      },
+      "root": {
+        "x": -3,
+        "y": 3
+      }
+    },
+    {
+      "t": 0.5,
+      "bones": {
+        "torso": 186,
+        "head": 182,
+        "armL_upper": 16,
+        "armL_lower": 64,
+        "armR_upper": 96,
+        "armR_lower": 68,
+        "legL_upper": 18,
+        "legL_lower": 12,
+        "legR_upper": -20,
+        "legR_lower": 6,
+        "weapon": 78
+      },
+      "root": {
+        "x": -4,
+        "y": 2
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

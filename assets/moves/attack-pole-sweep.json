@@ -1,0 +1,106 @@
+{
+  "id": "attack-pole-sweep",
+  "title": "一甩",
+  "weapon": "pole",
+  "loop": false,
+  "duration_ms": 560,
+  "contact_ms": 280,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      }
+    },
+    {
+      "t": 0.3,
+      "bones": {
+        "torso": 210,
+        "head": 216,
+        "armL_upper": -10,
+        "armL_lower": 4,
+        "armR_upper": 210,
+        "armR_lower": 200,
+        "legL_upper": 26,
+        "legL_lower": 6,
+        "legR_upper": -30,
+        "legR_lower": -10,
+        "weapon": 220
+      },
+      "root": {
+        "x": -5,
+        "y": 1
+      }
+    },
+    {
+      "t": 0.5,
+      "bones": {
+        "torso": 145,
+        "head": 136,
+        "armL_upper": -60,
+        "armL_lower": -20,
+        "armR_upper": 70,
+        "armR_lower": 50,
+        "legL_upper": 34,
+        "legL_lower": 14,
+        "legR_upper": -18,
+        "legR_lower": -6,
+        "weapon": 48
+      },
+      "root": {
+        "x": 8,
+        "y": -2
+      }
+    },
+    {
+      "t": 0.8,
+      "bones": {
+        "torso": 170,
+        "head": 166,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 40,
+        "armR_lower": 24,
+        "legL_upper": 16,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 50
+      },
+      "root": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 196
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

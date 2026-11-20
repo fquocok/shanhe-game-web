@@ -1,0 +1,106 @@
+{
+  "id": "attack-blade",
+  "title": "刀劍出手",
+  "weapon": "blade",
+  "loop": false,
+  "duration_ms": 500,
+  "contact_ms": 240,
+  "poses": [
+    {
+      "t": 0,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 40
+      }
+    },
+    {
+      "t": 0.3,
+      "bones": {
+        "torso": 205,
+        "head": 210,
+        "armL_upper": -16,
+        "armL_lower": -6,
+        "armR_upper": 200,
+        "armR_lower": 230,
+        "legL_upper": 20,
+        "legL_lower": 6,
+        "legR_upper": -26,
+        "legR_lower": -8,
+        "weapon": 230
+      },
+      "root": {
+        "x": -4,
+        "y": 0
+      }
+    },
+    {
+      "t": 0.48,
+      "bones": {
+        "torso": 148,
+        "head": 140,
+        "armL_upper": -50,
+        "armL_lower": -16,
+        "armR_upper": 70,
+        "armR_lower": 40,
+        "legL_upper": 32,
+        "legL_lower": 12,
+        "legR_upper": -10,
+        "legR_lower": -4,
+        "weapon": 30
+      },
+      "root": {
+        "x": 7,
+        "y": -2
+      }
+    },
+    {
+      "t": 0.78,
+      "bones": {
+        "torso": 170,
+        "head": 166,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 40,
+        "armR_lower": 20,
+        "legL_upper": 16,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 30
+      },
+      "root": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "torso": 180,
+        "head": 180,
+        "armL_upper": -34,
+        "armL_lower": -16,
+        "armR_upper": 34,
+        "armR_lower": 16,
+        "legL_upper": 14,
+        "legL_lower": 6,
+        "legR_upper": -14,
+        "legR_lower": -6,
+        "weapon": 40
+      },
+      "root": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}

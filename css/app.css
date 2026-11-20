@@ -346,6 +346,7 @@ body { min-height: 100dvh; }
   font-size: 0.88rem;
   font-weight: 400;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 .unit-thief h2 { font-size: 0.8rem; }
 .unit .hp-label {
@@ -354,6 +355,7 @@ body { min-height: 100dvh; }
   color: var(--mist);
   margin: 0.05rem 0 0.12rem;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 .bar {
   width: 72%;
@@ -601,3 +603,156 @@ body { min-height: 100dvh; }
 }
 
 [hidden] { display: none !important; }
+
+
+/* —— 點擊範圍與確認 —— */
+.chip, .btn.seal, .btn.text, .unit {
+  touch-action: manipulation;
+}
+.chip {
+  min-width: 44px;
+  /* 保持原 52px 視覺高度，這裡只保證不小於 44 */
+}
+.btn.text {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.45rem 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.btn.text.active { color: var(--lantern); border-bottom-color: var(--lantern); }
+.text-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.7rem;
+  align-items: center;
+  flex: 1 1 auto;
+}
+.unit {
+  min-width: 44px;
+  min-height: 44px;
+}
+.unit-escort { cursor: default; pointer-events: none; }
+.bank-escort { pointer-events: none; }
+.bank-stern { z-index: 5; }
+.unit-thief { pointer-events: auto; }
+.unit.selected {
+  outline: none;
+}
+.unit.selected::after {
+  bottom: 2.15rem;
+  width: 70px;
+  height: 16px;
+  background: radial-gradient(ellipse, rgba(212, 160, 86, 0.75), transparent 70%);
+}
+.unit.selected .portrait {
+  filter: drop-shadow(0 0 6px rgba(212, 160, 86, 0.45));
+}
+.unit.selected .unit-meta h2 { color: var(--lantern); }
+.tap-hint {
+  position: absolute;
+  left: 50%;
+  top: 0.15rem;
+  bottom: auto;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-kai);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--lantern);
+  text-shadow: 0 1px 6px rgba(16, 22, 20, 0.95);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* —— 立繪全身位移（與骨架共用同一拍） —— */
+.mover {
+  position: relative;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+.portrait { z-index: 1; }
+.rig-mount {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.rig-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+.rig-stroke {
+  fill: none;
+  stroke: #E7D8C4;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.rig-head { fill: none; }
+.rig-weapon, .rig-weapon-blade, .rig-weapon-guard, .rig-weapon-dart, .rig-weapon-tip {
+  stroke: var(--lantern);
+  fill: var(--lantern);
+}
+.rig-weapon { stroke-width: 2.3; }
+.rig-weapon-g[data-weapon="hidden"] .rig-weapon { stroke-width: 1.3; opacity: 0.55; }
+.app.show-rig .rig-mount { opacity: 0.95; }
+.app.show-rig .portrait .art { opacity: 0.22; }
+.app.show-rig .placeholder { opacity: 0.2; }
+
+.unit.mot-idle .mover { animation: mot-breathe 2.4s ease-in-out infinite; }
+.unit.mot-attack .mover { animation: mot-lunge var(--mot-dur, 0.52s) ease-out; }
+.unit.mot-hit .mover { animation: mot-knock var(--mot-dur, 0.36s) ease-out; }
+.unit.mot-dodge .mover { animation: mot-sidestep var(--mot-dur, 0.4s) ease-out; }
+.unit.mot-block .mover { animation: mot-brace var(--mot-dur, 0.38s) ease-out; }
+.unit.down .mover {
+  animation: none;
+  transform: translate(8px, 6px) rotate(8deg);
+  opacity: 0.9;
+}
+
+@keyframes mot-breathe {
+  0%, 100% { transform: translateY(0) rotate(-0.4deg); }
+  50% { transform: translateY(-2px) rotate(0.4deg); }
+}
+@keyframes mot-lunge {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  35% { transform: translate(calc(var(--lunge-x, 0px) * -0.18), calc(var(--lunge-y, 0px) * -0.18)) rotate(-3deg); }
+  52% { transform: translate(var(--lunge-x, 0px), var(--lunge-y, 0px)) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes mot-knock {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  28% { transform: translate(var(--knock-x, 10px), var(--knock-y, -6px)) rotate(-6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes mot-sidestep {
+  0% { transform: translate(0, 0); }
+  35% { transform: translate(var(--side-x, 16px), -3px) rotate(2deg); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes mot-brace {
+  0% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(calc(var(--knock-x, -6px) * 0.4), 3px) scale(0.97, 0.95) rotate(-2deg); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-bar span { animation: none; width: 100%; }
+  .unit.mot-idle .mover,
+  .unit.mot-attack .mover,
+  .unit.mot-hit .mover,
+  .unit.mot-dodge .mover,
+  .unit.mot-block .mover,
+  .unit.shake,
+  .floater, .seal-mark, .skill-flash {
+    animation: none !important;
+  }
+  .floater, .seal-mark, .skill-flash { opacity: 1; }
+}
