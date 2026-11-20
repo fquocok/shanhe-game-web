@@ -23,11 +23,11 @@
       "title": "學那一腳",
       "kind": "tutorial",
       "unlock": "start",
-      "review_gate": "yuki-copy",
       "x": 66,
       "y": 44,
       "copy_src": "stages/tutorial-kick.copy.json",
-      "blurb": "岸上的一課"
+      "blurb": "回家路上",
+      "location_name": "青禾渡"
     },
     {
       "id": "st51-lobby",

@@ -1,0 +1,56 @@
+{
+  "id": "st15-mud",
+  "title": "學那一腳",
+  "chapter": 15,
+  "location": "青禾渡・回家路上",
+  "credits": "本關為第十五章的教學變體。按鈕分段與部分過程為〔遊戲原創〕，台詞取自第十五章。",
+  "steps": [
+    {
+      "id": "try-kick",
+      "label": "試一腳",
+      "move": "attack-pole-kick",
+      "outcome": "ok"
+    },
+    {
+      "id": "try-parry",
+      "label": "試一撥",
+      "move": "attack-pole-parry",
+      "outcome": "ok"
+    },
+    {
+      "id": "try-sweep",
+      "label": "試一甩",
+      "move": "attack-pole-sweep",
+      "outcome": "fail"
+    }
+  ],
+  "beats": [
+    {
+      "id": "open",
+      "text": "夜霧未散。剛才鏢船船尾那一下，阿禾躲在老芄公的草棚後頭，捂著嘴看完了。"
+    },
+    {
+      "id": "want",
+      "text": "回家的路上，她忍不住比劃。一腳，一撥，一甩。不是要去打誰，只是手腳自己想動。"
+    },
+    {
+      "id": "prompt",
+      "text": "路邊有泥坑。一腳，一撥，一甩，照順序來。"
+    },
+    {
+      "id": "fail",
+      "text": "她學著那人，身子一擰，腳下一勾——勾到的是自己另一隻腳。「啡嘰」一聲，臉朝下，栽進了泥水坑。"
+    },
+    {
+      "id": "after",
+      "text": "她把臉從泥裡抬起來，吐出一口泥：「……甩出去的，是我自己。」抹了一把臉，越抹越髒。"
+    },
+    {
+      "id": "end",
+      "text": "「結論：功夫，不是看一遍就會的。」",
+      "closing": "摔進泥坑（隔天老芄公問她跟誰打架，她說：「跟我自己。輸了。」）",
+      "terminal_label": "摔進泥坑",
+      "result": "COMEDY_FAIL"
+    }
+  ]
+}
