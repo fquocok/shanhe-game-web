@@ -1,5 +1,5 @@
 /* 山河武俠演示 service worker：殼層網路優先，Pyodide／字型快取優先。 */
-const VERSION = "20261120-2243";
+const VERSION = "20261120-2307";
 const CACHE_IMMUTABLE = "shanhe-immutable-" + VERSION;
 const CACHE_RUNTIME = "shanhe-runtime-" + VERSION;
 

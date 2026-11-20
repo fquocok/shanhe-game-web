@@ -516,9 +516,8 @@
 
     const ended = Boolean(state.terminal_result);
     $("btn-submit").disabled = ended || Boolean(autoTimer) || !selectedAction || !selectedTarget;
-    $("btn-auto").disabled = ended;
-    $("btn-auto").classList.toggle("running", Boolean(autoTimer));
-    $("btn-auto").textContent = autoTimer ? "停住" : "自動演示";
+    $("btn-auto").disabled = false;
+    syncControlButton();
 
     if (ended) {
       skillFlash.hidden = true;
@@ -562,8 +561,28 @@
       render();
       consumeEvents(state.events || [], wasEnded);
       if (state.terminal_result && !wasEnded) recordBattleResult(state);
+      maybeStartAuto();
     }
     return payload;
+  }
+
+  function currentControl() {
+    const mode = window.ShanheSave && window.ShanheSave.getSetting
+      ? window.ShanheSave.getSetting("battle_control")
+      : "manual";
+    return mode === "auto" ? "auto" : "manual";
+  }
+
+  function syncControlButton() {
+    const btn = $("btn-auto");
+    if (!btn) return;
+    const mode = currentControl();
+    const running = Boolean(autoTimer);
+    btn.textContent = mode === "auto" ? "自動" : "手動";
+    btn.classList.toggle("is-auto", mode === "auto" || running);
+    btn.classList.toggle("running", running);
+    btn.setAttribute("aria-pressed", mode === "auto" ? "true" : "false");
+    btn.title = "切換自動或手動出手";
   }
 
   function stopAuto() {
@@ -571,6 +590,21 @@
       clearTimeout(autoTimer);
       autoTimer = null;
     }
+  }
+
+  function startAuto() {
+    if (autoTimer || !state || state.terminal_result) return;
+    autoTimer = setTimeout(() => {}, 0);
+    send({ type: "request_auto", enabled: true }).then((payload) => {
+      applyState(payload);
+      if (!autoTimer) return;
+      autoTimer = setTimeout(stepAutoLoop, 200);
+    }).catch(showFatal);
+  }
+
+  function maybeStartAuto() {
+    if (!state || state.terminal_result) return;
+    if (currentControl() === "auto" && !autoTimer) startAuto();
   }
 
   function stepAutoLoop() {
@@ -594,16 +628,15 @@
     send({ type: "submit" }).then(applyState).catch(showFatal);
   };
   $("btn-auto").onclick = () => {
-    if (autoTimer) {
+    if (currentControl() === "auto" || autoTimer) {
+      if (window.ShanheSave) window.ShanheSave.setSetting("battle_control", "manual");
       stopAuto();
       render();
       return;
     }
-    autoTimer = setTimeout(() => {}, 0);
-    send({ type: "request_auto", enabled: true }).then((payload) => {
-      applyState(payload);
-      autoTimer = setTimeout(stepAutoLoop, 200);
-    }).catch(showFatal);
+    if (window.ShanheSave) window.ShanheSave.setSetting("battle_control", "auto");
+    if (state && !state.terminal_result) startAuto();
+    else syncControlButton();
   };
   $("btn-reset").onclick = () => {
     stopAuto();
@@ -640,6 +673,7 @@
     app.hidden = true;
     if ($("map-screen")) $("map-screen").hidden = true;
     if ($("tutorial-screen")) $("tutorial-screen").hidden = true;
+    if ($("event-screen")) $("event-screen").hidden = true;
     fatal.hidden = true;
   }
 
@@ -649,6 +683,7 @@
     else if (id === "battle") app.hidden = false;
     else if (id === "map") $("map-screen").hidden = false;
     else if (id === "tutorial") $("tutorial-screen").hidden = false;
+    else if (id === "event") $("event-screen").hidden = false;
   }
 
   function setHash(path) {
@@ -713,7 +748,34 @@
       enterTutorial(node);
       return;
     }
+    if (node.kind === "training" || node.kind === "standoff" || node.kind === "event" || node.copy_src) {
+      enterEvent(node);
+      return;
+    }
     enterBattle(node);
+  }
+
+  function enterEvent(node) {
+    showScreen("event");
+    setHash("stage/" + node.id);
+    if (!window.ShanheEvent) {
+      showFatal("事件框架尚未載入");
+      return;
+    }
+    window.ShanheEvent.start({
+      node,
+      onFinished: (payload) => {
+        if (window.ShanheSave) {
+          window.ShanheSave.recordResult(node.id, {
+            result: payload.result,
+            terminal_label: payload.terminal_label,
+            incrementAttempt: false,
+          });
+        }
+        if (window.ShanheMap) window.ShanheMap.render();
+      },
+      onBattle: (battleNode) => enterBattle(battleNode),
+    }).catch((error) => showFatal(error.message));
   }
 
   function enterTutorial(node) {
@@ -784,6 +846,8 @@
 
   $("btn-back-map").onclick = () => showMap();
   $("tutorial-back").onclick = () => showMap();
+  if ($("event-back")) $("event-back").onclick = () => showMap();
+  if ($("event-action")) $("event-action").onclick = () => window.ShanheEvent && window.ShanheEvent.advance();
   $("tutorial-action").onclick = () => window.ShanheTutorial && window.ShanheTutorial.playChoice();
 
   const bootStarted = performance.now();
@@ -815,6 +879,6 @@
   }).catch((error) => showFatal(error.message));
 
   window.addEventListener("hashchange", () => {
-    if (app.hidden && $("tutorial-screen").hidden) routeFromHash();
+    if (app.hidden && $("tutorial-screen").hidden && (!$("event-screen") || $("event-screen").hidden)) routeFromHash();
   });
 })();

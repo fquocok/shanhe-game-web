@@ -62,6 +62,34 @@
     </section>
   </section>
 
+  <section id="event-screen" class="event-screen tutorial-screen" hidden>
+    <header class="masthead">
+      <div class="mast-left">
+        <p class="series">山河武俠</p>
+        <h1 id="event-title">事件</h1>
+      </div>
+      <p id="event-meta" class="meta"></p>
+    </header>
+    <div id="event-meter" class="event-meter" hidden>
+      <span class="event-meter-label">對峙</span>
+      <span id="event-meter-bar" class="event-meter-bar"></span>
+    </div>
+    <div id="event-beats" class="tutorial-page"></div>
+    <p id="event-prompt" class="event-prompt" hidden></p>
+    <div id="event-timer" class="event-timer" hidden><span id="event-timer-bar"></span></div>
+    <p id="event-end" class="ending" hidden></p>
+    <p id="event-credits" class="credits"></p>
+    <section class="controls">
+      <div id="event-choices" class="event-choices"></div>
+      <div class="row">
+        <button type="button" id="event-action" class="btn seal">繼續</button>
+        <div class="text-actions">
+          <button type="button" id="event-back" class="btn text">回地圖</button>
+        </div>
+      </div>
+    </section>
+  </section>
+
   <main id="app" class="app" hidden>
     <div class="scene" data-slot="backgrounds/qinghedu-barge-night-tall.webp">
       <img class="scene-art" data-src="assets/backgrounds/qinghedu-barge-night-tall.webp" alt="">
@@ -102,7 +130,7 @@
       <div class="row">
         <button type="button" id="btn-submit" class="btn seal" disabled>出手</button>
         <div class="text-actions">
-          <button type="button" id="btn-auto" class="btn text">自動演示</button>
+          <button type="button" id="btn-auto" class="btn text">手動</button>
           <button type="button" id="btn-reset" class="btn text">再來一次</button>
           <button type="button" id="btn-back-map" class="btn text">回地圖</button>
           <button type="button" id="btn-rig" class="btn text" aria-pressed="false" title="以墨線骨架觀看招式動作">墨線</button>
@@ -135,6 +163,7 @@
   <script src="js/save.js"></script>
   <script src="js/map.js"></script>
   <script src="js/tutorial.js"></script>
+  <script src="js/event.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pwa.js"></script>
 </body>

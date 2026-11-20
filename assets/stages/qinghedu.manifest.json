@@ -33,10 +33,13 @@
       "id": "st51-lobby",
       "title": "鹿鳴居廊下",
       "kind": "standoff",
-      "unlock": "locked",
+      "unlock": "start",
       "x": 18,
       "y": 24,
-      "blurb": "未開放"
+      "blurb": "廊下",
+      "review_gate": "yuki-copy",
+      "copy_src": "stages/st51-lobby.copy.json",
+      "location_name": "山腳集鎮"
     },
     {
       "id": "st56-teashop",
@@ -51,10 +54,25 @@
       "id": "st42-stance",
       "title": "第一篇的門檻",
       "kind": "training",
-      "unlock": "locked",
+      "unlock": "start",
       "x": 80,
       "y": 20,
-      "blurb": "未開放"
+      "blurb": "外院泥地",
+      "review_gate": "yuki-copy",
+      "copy_src": "stages/st42-stance.copy.json",
+      "location_name": "快刀門"
+    },
+    {
+      "id": "st143-qinggong",
+      "title": "胡三的「輕功」",
+      "kind": "event",
+      "unlock": "start",
+      "review_gate": "yuki-copy",
+      "x": 76,
+      "y": 62,
+      "copy_src": "stages/st143-qinggong.copy.json",
+      "blurb": "廊下秤人",
+      "location_name": "快刀門"
     }
   ]
 }

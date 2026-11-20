@@ -22,7 +22,7 @@
       game_id: GAME_ID,
       updated_at: null,
       stages: {},
-      settings: { seed_policy: "recommended" },
+      settings: { seed_policy: "recommended", battle_control: "manual" },
     };
   }
 
@@ -48,7 +48,9 @@
       version = Number(save.schema_version) || version + 1;
     }
     if (!save.stages || typeof save.stages !== "object" || Array.isArray(save.stages)) save.stages = {};
-    if (!save.settings || typeof save.settings !== "object") save.settings = { seed_policy: "recommended" };
+    if (!save.settings || typeof save.settings !== "object") save.settings = { seed_policy: "recommended", battle_control: "manual" };
+    if (!save.settings.seed_policy) save.settings.seed_policy = "recommended";
+    if (save.settings.battle_control !== "auto") save.settings.battle_control = "manual";
     save.schema_version = Math.max(1, Number(save.schema_version) || 1);
     save.game_id = GAME_ID;
     return save;
@@ -159,6 +161,21 @@
     return { state: "open", label: "可入", enterable: true, entry };
   }
 
+
+  function getSetting(key) {
+    const save = load();
+    return save.settings ? save.settings[key] : undefined;
+  }
+
+  function setSetting(key, value) {
+    const save = load();
+    if (!save.settings || typeof save.settings !== "object") {
+      save.settings = { seed_policy: "recommended", battle_control: "manual" };
+    }
+    save.settings[key] = value;
+    return persist(save);
+  }
+
   const api = {
     KEY,
     SCHEMA_VERSION,
@@ -172,6 +189,8 @@
     reset,
     accessFor,
     nowIso,
+    getSetting,
+    setSetting,
   };
 
   if (typeof module === "object" && module.exports) module.exports = api;
