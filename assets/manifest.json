@@ -1,0 +1,10 @@
+{
+  "comment": "把已到位的成品檔名列入 files，介面才會載入。路徑相對於 assets/。",
+  "files": [
+    "portraits/escort-battle.webp",
+    "portraits/thief-a-battle.webp",
+    "portraits/thief-b-battle.webp",
+    "backgrounds/qinghedu-barge-night-tall.webp",
+    "backgrounds/qinghedu-barge-night.webp"
+  ]
+}

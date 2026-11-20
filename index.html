@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1c24">
+  <meta name="theme-color" content="#101614">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>山河武俠・鏢船夜盜</title>
   <link rel="stylesheet" href="css/app.css">
@@ -17,26 +17,35 @@
   </div>
 
   <main id="app" class="app" hidden>
+    <div class="scene" data-slot="backgrounds/qinghedu-barge-night-tall.webp">
+      <img class="scene-art" data-src="assets/backgrounds/qinghedu-barge-night-tall.webp" alt="">
+    </div>
+
     <header class="masthead">
-      <p class="series">山河武俠</p>
-      <h1 id="title">青禾渡・鏢船夜盜</h1>
-      <p id="meta" class="meta">第 15 章　青禾渡渡口</p>
+      <div class="mast-left">
+        <p class="series">山河武俠</p>
+        <h1 id="title">青禾渡・鏢船夜盜</h1>
+      </div>
+      <p id="meta" class="meta">第十五章・其一</p>
     </header>
 
     <p id="flavor" class="flavor"></p>
 
     <section class="field" aria-label="戰場">
-      <div class="bank bank-escort">
-        <article id="player-card" class="unit unit-escort"></article>
+      <article id="ahe-watch" class="ahe" data-slot="portraits/ahe-watch.webp" title="阿禾在岸上旁觀">
+        <img class="art" data-src="assets/portraits/ahe-watch.webp" alt="阿禾" hidden>
+      </article>
+
+      <div class="bank bank-stern bank-raiders">
+        <article id="enemy-a" class="unit unit-thief unit-thief-a" data-slot="portraits/thief-a-battle.webp"></article>
+        <article id="enemy-b" class="unit unit-thief unit-thief-b" data-slot="portraits/thief-b-battle.webp"></article>
       </div>
-      <div class="river" aria-hidden="true">
-        <span class="skiff"></span>
-        <span class="skiff delay"></span>
+
+      <div class="bank bank-deck bank-escort">
+        <article id="player-card" class="unit unit-escort" data-slot="portraits/escort-battle.webp"></article>
       </div>
-      <div class="bank bank-raiders">
-        <article id="enemy-a" class="unit unit-thief"></article>
-        <article id="enemy-b" class="unit unit-thief"></article>
-      </div>
+
+      <p id="skill-flash" class="skill-flash" hidden></p>
     </section>
 
     <ol id="log" class="log" aria-live="polite"></ol>
@@ -44,9 +53,11 @@
     <section class="controls">
       <div id="actions" class="actions"></div>
       <div class="row">
-        <button type="button" id="btn-submit" class="btn primary" disabled>出手</button>
-        <button type="button" id="btn-auto" class="btn">自動演示</button>
-        <button type="button" id="btn-reset" class="btn ghost">再來一次</button>
+        <button type="button" id="btn-submit" class="btn seal" disabled>出手</button>
+        <div class="text-actions">
+          <button type="button" id="btn-auto" class="btn text">自動演示</button>
+          <button type="button" id="btn-reset" class="btn text">再來一次</button>
+        </div>
       </div>
     </section>
 

@@ -6,12 +6,31 @@
   const fatal = $("fatal");
   const logEl = $("log");
   const ending = $("ending");
+  const skillFlash = $("skill-flash");
+
+  const TURN_NUM = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+  const CHAPTER_NUM = { 15: "十五" };
+  const BODY_PARTS = ["肋下", "肩頭", "腕側", "前胸", "脅下"];
+  const ICON_BY_MOVE = {
+    "一腳": "assets/icons/kick.png",
+    "一撥": "assets/icons/parry.png",
+    "一甩": "assets/icons/sweep.png",
+  };
+  const PORTRAIT_BY_ROLE = {
+    escort: "assets/portraits/escort-battle.webp",
+    "thief-0": "assets/portraits/thief-a-battle.webp",
+    "thief-1": "assets/portraits/thief-b-battle.webp",
+  };
+  let artFiles = new Set();
 
   let state = null;
   let selectedTarget = null;
   let selectedAction = null;
   let autoTimer = null;
   let pending = Promise.resolve();
+  let battleBegun = false;
+  let endedLogged = false;
+  const seenEventKeys = new Set();
   const metrics = { loadMs: null, zipBytes: null };
 
   function showFatal(message) {
@@ -42,57 +61,309 @@
     return pending;
   }
 
-  function unitHtml(unit, kind) {
-    const ratio = unit.max_hp ? Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100)) : 0;
-    const down = unit.alive ? "" : " down";
-    const selected = selectedTarget === unit.id ? " selected" : "";
-    const pole = kind === "escort" ? '<i class="pole" aria-hidden="true"></i>' : "";
-    return `<div class="silhouette" aria-hidden="true"></div>${pole}
-      <h2>${escapeHtml(unit.name)}</h2>
-      <p class="hp-label">${unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水"}</p>
-      <div class="bar"><span style="width:${ratio}%"></span></div>`;
-  }
-
   function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
     }[ch]));
   }
 
-  function appendEvents(events) {
-    if (!events || !events.length) return;
-    for (const event of events) {
-      const item = document.createElement("li");
-      const kind = event.kind || "";
-      if (kind === "DAMAGE_APPLIED" || kind === "HIT_CONFIRMED") item.className = "hit";
-      if (kind === "DEFEATED") item.className = "down";
-      const who = nameOf(event.actor_id);
-      const targets = (event.target_ids || []).map(nameOf).filter(Boolean).join("、");
-      let text = event.label || kind;
-      if (who && targets) text = `${who}　${text}　${targets}`;
-      else if (who) text = `${who}　${text}`;
-      item.textContent = text;
-      logEl.appendChild(item);
+  function hasArt(path) {
+    const rel = String(path || "").replace(/^assets\//, "");
+    return artFiles.has(rel) || artFiles.has("assets/" + rel);
+  }
+
+  function bindArt(img, onReady) {
+    if (!img) return;
+    const src = img.getAttribute("data-src") || img.getAttribute("src") || "";
+    if (!src || !hasArt(src)) {
+      img.removeAttribute("src");
+      img.hidden = true;
+      return;
     }
-    logEl.scrollTop = logEl.scrollHeight;
+    img.src = src;
+    const show = () => { img.hidden = false; onReady && onReady(); };
+    const hide = () => { img.hidden = true; };
+    img.addEventListener("load", show);
+    img.addEventListener("error", hide);
+    if (img.complete) {
+      if (img.naturalWidth > 0) show();
+      else hide();
+    }
+  }
+
+  function shortName(name) {
+    return String(name || "").replace(/^未具名/, "");
   }
 
   function nameOf(id) {
     if (!state || !id) return "";
     const all = [state.player, ...(state.allies || []), ...(state.enemies || [])];
     const found = all.find((unit) => unit.id === id);
-    return found ? found.name : "";
+    return found ? shortName(found.name) : "";
+  }
+
+  function unitEl(id) {
+    if (!state) return null;
+    if (state.player && state.player.id === id) return $("player-card");
+    const enemies = state.enemies || [];
+    if (enemies[0] && enemies[0].id === id) return $("enemy-a");
+    if (enemies[1] && enemies[1].id === id) return $("enemy-b");
+    return null;
+  }
+
+  function moveFromEvent(event) {
+    const id = (event.details && event.details.attack_instance_id) || "";
+    if (id.includes(".active")) return "一腳";
+    if (id.includes(".pursuit")) return "一甩";
+    if (id.includes(".retaliation")) return "一撥";
+    if (id.includes("fist") || id.includes("action1")) return "撲上";
+    const family = event.details?.action_presentation_metadata?.weapon_visual_family;
+    if (family === "槍法" || family === "杆法") return "一腳";
+    if (family === "拳法") return "撲上";
+    if (state && event.actor_id === state.player?.id && selectedAction) {
+      if (selectedAction.endsWith(".active")) return "一腳";
+      if (selectedAction.endsWith(".pursuit")) return "一甩";
+      if (selectedAction.endsWith(".retaliation")) return "一撥";
+    }
+    return "";
+  }
+
+  function actionLine(actor, move, target) {
+    if (move === "一腳") return `${actor}一腳，踢向${target}。`;
+    if (move === "一撥") return `${actor}一撥，把${target}放出船舷。`;
+    if (move === "一甩") return `${actor}一甩，掃向${target}。`;
+    if (move === "撲上") return `${actor}撲上前來，打向${target}。`;
+    return `${actor}出手，攻向${target}。`;
+  }
+
+  function resultLine(move, target, { dodged, parried, defeated, part }) {
+    if (dodged) {
+      const label = move ? `這一${move.replace("撲上", "下")}` : "這一招";
+      return `${label}落空，只帶起一團江霧。`;
+    }
+    if (parried) return `${target}偏身格開。`;
+    if (defeated) return `${target}氣血耗盡，翻落江中。`;
+    const blow = move ? `這一${move.replace("撲上", "下")}` : "這一招";
+    return `${blow}結實，${target}${part}受創。`;
+  }
+
+  function eventKey(event) {
+    const details = event.details || {};
+    return [
+      event.kind, event.actor_id,
+      (event.target_ids || []).join(","),
+      details.attack_instance_id || "",
+      details.hp_damage, details.remaining_hp, details.outcome,
+      details.terminal_state || "",
+    ].join("|");
+  }
+
+  function kindOf(event) {
+    let kind = String(event.kind || "");
+    if (kind.includes(".")) kind = kind.split(".").pop();
+    return kind;
+  }
+
+  function appendLog(text, className) {
+    if (!text) return;
+    const item = document.createElement("li");
+    if (className) item.className = className;
+    item.textContent = text;
+    logEl.appendChild(item);
+    item.scrollIntoView({ block: "end" });
+  }
+
+  function flashSkill(name) {
+    if (!name || name === "撲上") {
+      // 夜盜無正式招名：場上寫「撲上」仍可一閃
+    }
+    if (!name) return;
+    skillFlash.hidden = false;
+    skillFlash.textContent = name;
+    skillFlash.style.animation = "none";
+    void skillFlash.offsetWidth;
+    skillFlash.style.animation = "";
+    window.setTimeout(() => { skillFlash.hidden = true; }, 460);
+  }
+
+  function bumpUnit(id) {
+    const node = unitEl(id);
+    if (!node) return;
+    node.classList.remove("shake", "hit-flash");
+    void node.offsetWidth;
+    node.classList.add("shake", "hit-flash");
+    window.setTimeout(() => node.classList.remove("shake", "hit-flash"), 280);
+  }
+
+  function spawnFloater(targetId, text, className) {
+    const node = unitEl(targetId);
+    if (!node) return;
+    const el = document.createElement("span");
+    el.className = className;
+    el.textContent = text;
+    node.appendChild(el);
+    window.setTimeout(() => el.remove(), 750);
+  }
+
+  function showDamage(event) {
+    const details = event.details || {};
+    const targetId = (event.target_ids || [])[0];
+    if (!targetId) return;
+    if (details.dodged) {
+      spawnFloater(targetId, "空", "seal-mark");
+      return;
+    }
+    if (details.parried) {
+      spawnFloater(targetId, "格", "seal-mark");
+      return;
+    }
+    const amount = Number(details.hp_damage || 0);
+    if (!amount) return;
+    const heavy = amount >= 60 || details.defeated;
+    spawnFloater(targetId, String(amount), "floater" + (heavy ? " heavy" : ""));
+    bumpUnit(targetId);
+  }
+
+  const SKIP_KINDS = new Set([
+    "ACTION_SELECTED", "ATTACK_RESOLVED", "ENEMY_INTENT",
+    "CONTROL_READY", "FORMAL_TURN_STARTED", "FORMAL_TURN_COMPLETED",
+    "ENCOUNTER_TERMINATED", "TARGET_SELECTED",
+    "EFFECTIVE_ATTACK_DAMAGE_CONFIRMED", "ACTION_COMPLETED",
+  ]);
+
+  function consumeEvents(events, alreadyEnded) {
+    if (!events || !events.length) return;
+    const unique = [];
+    for (const event of events) {
+      const key = eventKey(event);
+      if (seenEventKeys.has(key)) continue;
+      seenEventKeys.add(key);
+      unique.push(event);
+    }
+
+    let encounterOver = alreadyEnded || endedLogged;
+    const pendingStarts = [];
+
+    const flushStart = (event, fallbackMove) => {
+      const actor = nameOf(event.actor_id);
+      const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0];
+      const move = fallbackMove || moveFromEvent(event) || "";
+      if (!actor || !target) return;
+      flashSkill(move);
+      appendLog(actionLine(actor, move, target));
+      battleBegun = true;
+    };
+
+    for (const event of unique) {
+      const kind = kindOf(event);
+      if (kind === "ENCOUNTER_TERMINATED") {
+        encounterOver = true;
+        endedLogged = true;
+        continue;
+      }
+      if (encounterOver && (kind === "ACTION_START" || kind === "ACTION_STARTED" || kind === "ACTION_SELECTED")) {
+        continue;
+      }
+      if (kind === "ACTION_START" && !(event.target_ids || []).length) {
+        // 下一拍預告，不寫進戰報
+        continue;
+      }
+      if (SKIP_KINDS.has(kind)) continue;
+
+      if (kind === "ACTION_STARTED" || kind === "ACTION_START") {
+        pendingStarts.push(event);
+        continue;
+      }
+
+      if (kind === "DAMAGE_APPLIED" || kind === "HIT_CONFIRMED" || kind === "DODGE_CONFIRMED" || kind === "PARRY_CONFIRMED") {
+        const details = event.details || {};
+        const move = moveFromEvent(event);
+        const start = pendingStarts.find((item) => item.actor_id === event.actor_id) || pendingStarts.shift();
+        if (start) {
+          pendingStarts.splice(pendingStarts.indexOf(start), 1);
+          flushStart(start, move);
+        } else if (move) {
+          flashSkill(move);
+        }
+        showDamage(event);
+        const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0] || "對方";
+        const part = BODY_PARTS[(Number(details.hp_damage) || 0) % BODY_PARTS.length];
+        const dodged = Boolean(details.dodged) || kind === "DODGE_CONFIRMED";
+        const parried = Boolean(details.parried) || kind === "PARRY_CONFIRMED";
+        if (details.defeated) {
+          // 先寫結實一擊的場上數字，戰報直接收成落水，避免「受創」再「翻落」兩句重複過近
+          appendLog(resultLine(move, target, { dodged, parried, defeated: true, part }), "down");
+        } else {
+          appendLog(resultLine(move, target, { dodged, parried, defeated: false, part }), dodged || parried ? "" : "hit");
+        }
+        continue;
+      }
+
+      if (kind === "DEFEATED" || kind === "COMBATANT_DEFEATED") {
+        const target = (event.target_ids || []).map(nameOf).filter(Boolean)[0];
+        if (!target) continue;
+        const already = Array.from(logEl.querySelectorAll("li")).some((li) => li.textContent.includes(`${target}氣血耗盡`));
+        if (!already) appendLog(`${target}氣血耗盡，翻落江中。`, "down");
+        continue;
+      }
+    }
+
+    // 尚未配上傷害的出手（例如被中斷）仍寫動作句
+    for (const start of pendingStarts) {
+      flushStart(start, moveFromEvent(start));
+    }
+
+    $("flavor").classList.toggle("compact", battleBegun);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function chapterLine() {
+    const chapter = state.chapter || 15;
+    const turn = state.formal_turn || 1;
+    const ch = CHAPTER_NUM[chapter] || String(chapter);
+    const t = turn >= 1 && turn <= 10 ? TURN_NUM[turn] : String(turn);
+    return `第${ch}章・其${t}`;
+  }
+
+  function unitHtml(unit, role) {
+    const ratio = unit.max_hp ? Math.max(0, Math.min(100, (unit.hp / unit.max_hp) * 100)) : 0;
+    const src = PORTRAIT_BY_ROLE[role] || "";
+    const ink = role === "escort"
+      ? '<span class="placeholder placeholder-escort" aria-hidden="true"><i class="pole"></i></span>'
+      : '<span class="placeholder placeholder-thief" aria-hidden="true"></span>';
+    return `<div class="portrait">
+        <img class="art" data-src="${src}" alt="" hidden>
+        ${ink}
+      </div>
+      <div class="unit-meta">
+        <h2>${escapeHtml(unit.name)}</h2>
+        <p class="hp-label">${unit.alive ? `${unit.hp}／${unit.max_hp}` : "已落水"}</p>
+        <div class="bar"><span style="width:${ratio}%"></span></div>
+      </div>`;
+  }
+
+  function hookPortrait(node) {
+    const img = node.querySelector("img.art");
+    const ph = node.querySelector(".placeholder");
+    bindArt(img, () => { if (ph) ph.hidden = true; });
+  }
+
+  function hookSceneArt() {
+    document.querySelectorAll(".scene-art").forEach((img) => bindArt(img));
+    const aheImg = document.querySelector("#ahe-watch img.art");
+    bindArt(aheImg);
   }
 
   function render() {
     if (!state) return;
     $("title").textContent = state.title || "青禾渡・鏢船夜盜";
-    $("meta").textContent = `第 ${state.chapter || 15} 章　${state.location || "青禾渡"}　第 ${state.formal_turn || 1} 個回合`;
+    $("meta").textContent = chapterLine();
     $("flavor").textContent = state.flavor || "";
     $("credits").textContent = state.credits || "";
 
-    $("player-card").className = "unit unit-escort" + (state.player.alive ? "" : " down");
+    $("player-card").className = "unit unit-escort" + (state.player.alive ? "" : " down") + (selectedTarget === state.player.id ? " selected" : "");
     $("player-card").innerHTML = unitHtml(state.player, "escort");
+    hookPortrait($("player-card"));
 
     const enemies = state.enemies || [];
     ["enemy-a", "enemy-b"].forEach((id, index) => {
@@ -103,8 +374,10 @@
         return;
       }
       node.hidden = false;
-      node.className = "unit unit-thief" + (unit.alive ? "" : " down") + (selectedTarget === unit.id ? " selected" : "");
-      node.innerHTML = unitHtml(unit, "thief");
+      const variant = index === 0 ? " unit-thief-a" : " unit-thief-b";
+      node.className = "unit unit-thief" + variant + (unit.alive ? "" : " down") + (selectedTarget === unit.id ? " selected" : "");
+      node.innerHTML = unitHtml(unit, "thief-" + index);
+      hookPortrait(node);
       node.onclick = () => {
         if (!unit.alive || state.terminal_result || autoTimer) return;
         selectedTarget = unit.id;
@@ -118,7 +391,10 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "chip" + (selectedAction === action.action_id ? " active" : "");
-      button.textContent = action.display_name;
+      const move = action.display_name;
+      const icon = ICON_BY_MOVE[move];
+      button.innerHTML = (icon ? `<img class="chip-icon" data-src="${icon}" alt="" hidden>` : "") + escapeHtml(move);
+      if (icon) bindArt(button.querySelector(".chip-icon"));
       button.disabled = !action.enabled || Boolean(state.terminal_result) || Boolean(autoTimer);
       button.title = action.set_name || action.engine_name || "";
       button.onclick = () => {
@@ -132,9 +408,10 @@
     $("btn-submit").disabled = ended || Boolean(autoTimer) || !selectedAction || !selectedTarget;
     $("btn-auto").disabled = ended;
     $("btn-auto").classList.toggle("running", Boolean(autoTimer));
-    $("btn-auto").textContent = autoTimer ? "演示中…" : "自動演示";
+    $("btn-auto").textContent = autoTimer ? "停住" : "自動演示";
 
     if (ended) {
+      skillFlash.hidden = true;
       ending.hidden = false;
       ending.className = "ending" + (state.terminal_result === "DEFEAT" ? " loss" : "");
       ending.textContent = state.terminal_label || (state.terminal_result === "VICTORY" ? "鏢船守住了" : "鏢船失守");
@@ -151,15 +428,20 @@
       return payload;
     }
     if (payload.state) {
+      const wasEnded = Boolean(state && state.terminal_result);
       state = payload.state;
       if (payload.action === "start" || payload.action === "reset") {
         logEl.innerHTML = "";
         selectedAction = null;
         selectedTarget = null;
+        battleBegun = false;
+        endedLogged = false;
+        seenEventKeys.clear();
+        $("flavor").classList.remove("compact");
         stopAuto();
       }
-      appendEvents(state.events || []);
       render();
+      consumeEvents(state.events || [], wasEnded);
     }
     return payload;
   }
@@ -180,7 +462,7 @@
         render();
         return;
       }
-      autoTimer = setTimeout(stepAutoLoop, 850);
+      autoTimer = setTimeout(stepAutoLoop, 900);
     }).catch((error) => {
       stopAuto();
       showFatal(error.message);
@@ -209,7 +491,11 @@
 
   boot.hidden = false;
   const bootStarted = performance.now();
-  send({ type: "init" })
+  const artReady = fetch("assets/manifest.json")
+    .then((res) => res.ok ? res.json() : { files: [] })
+    .then((data) => { artFiles = new Set(data.files || []); })
+    .catch(() => { artFiles = new Set(); });
+  artReady.then(() => { hookSceneArt(); return send({ type: "init" }); })
     .then((ready) => {
       applyState(ready);
       return send({ type: "start" });
