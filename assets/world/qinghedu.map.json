@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_AREA_MAP_V0_1",
+  "area_id": "qinghedu",
+  "area_name": "青禾渡",
+  "chapter_scope": "1-240",
+  "copy_src": "world/qinghedu.copy.json",
+  "quests_src": "world/qinghedu.quests.json",
+  "encounters_src": "world/qinghedu.encounters.json",
+  "start_node": "qh-hut",
+  "times": [
+    "night",
+    "morning"
+  ],
+  "note": "點與路照 Yuki 定稿（2026-11-22）：夜裡只開茅棚—回家路上—渡口・石階—老艄公的草棚後頭；渡口—村口只在早上；官道分岔不開。座標為紙面百分比，河在下方（第 1 章：村口在支流與大河交會處）。",
+  "nodes": [
+    {
+      "id": "qh-hut",
+      "x": 30,
+      "y": 42,
+      "actions": [
+        {
+          "id": "rest",
+          "type": "rest",
+          "script": "sleep",
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "sleep"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-liu",
+      "x": 16,
+      "y": 22,
+      "actions": [
+        {
+          "id": "talk-liu",
+          "type": "talk",
+          "npc": "npc-liu"
+        }
+      ]
+    },
+    {
+      "id": "qh-zhou",
+      "x": 52,
+      "y": 36,
+      "actions": [
+        {
+          "id": "look-zhou",
+          "type": "inspect",
+          "inspect": "zhou-morning",
+          "when": {
+            "time": "morning"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-stall",
+      "x": 74,
+      "y": 60,
+      "actions": [
+        {
+          "id": "talk-sun",
+          "type": "talk",
+          "npc": "npc-sun"
+        }
+      ],
+      "on_arrive": [
+        {
+          "when": {
+            "quest_step": [
+              "q-qh-tokens",
+              "go_stall"
+            ]
+          },
+          "effects": [
+            {
+              "set_flag": "tokens.at_stall"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qh-zheng",
+      "x": 62,
+      "y": 16,
+      "actions": [
+        {
+          "id": "talk-zheng",
+          "type": "talk",
+          "npc": "npc-zheng"
+        }
+      ]
+    },
+    {
+      "id": "qh-ferry",
+      "x": 46,
+      "y": 74,
+      "actions": [
+        {
+          "id": "talk-boatman",
+          "type": "talk",
+          "npc": "npc-boatman"
+        },
+        {
+          "id": "look-ferry-night",
+          "type": "inspect",
+          "inspect": "ferry-night",
+          "when": {
+            "time": "night"
+          }
+        },
+        {
+          "id": "look-post",
+          "type": "inspect",
+          "inspect": "ferry-post",
+          "when": {
+            "time": "morning"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-shed",
+      "x": 20,
+      "y": 78,
+      "actions": [
+        {
+          "id": "watch-barge",
+          "type": "stage",
+          "stage_id": "st15-escort",
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "watch"
+            ]
+          }
+        }
+      ],
+      "on_arrive": [
+        {
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "go_shed"
+            ]
+          },
+          "effects": [
+            {
+              "set_flag": "reached.shed"
+            }
+          ],
+          "script": "pre_battle"
+        }
+      ]
+    },
+    {
+      "id": "qh-mudroad",
+      "x": 36,
+      "y": 58,
+      "actions": [
+        {
+          "id": "learn-kick",
+          "type": "stage",
+          "stage_id": "st15-mud",
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "go_home"
+            ]
+          }
+        }
+      ],
+      "on_arrive": [
+        {
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "go_home"
+            ]
+          },
+          "stage_id": "st15-mud"
+        }
+      ]
+    },
+    {
+      "id": "qh-north",
+      "x": 88,
+      "y": 36,
+      "locked": true,
+      "actions": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-hut-mud",
+      "a": "qh-hut",
+      "b": "qh-mudroad",
+      "steps": 1,
+      "encounters": "enc-night-fog"
+    },
+    {
+      "id": "e-mud-ferry",
+      "a": "qh-mudroad",
+      "b": "qh-ferry",
+      "steps": 1,
+      "encounters": "enc-night-fog"
+    },
+    {
+      "id": "e-ferry-shed",
+      "a": "qh-ferry",
+      "b": "qh-shed",
+      "steps": 1
+    },
+    {
+      "id": "e-hut-liu",
+      "a": "qh-hut",
+      "b": "qh-liu",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-hut-zhou",
+      "a": "qh-hut",
+      "b": "qh-zhou",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-zhou-stall",
+      "a": "qh-zhou",
+      "b": "qh-stall",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-stall-zheng",
+      "a": "qh-stall",
+      "b": "qh-zheng",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-zheng-liu",
+      "a": "qh-zheng",
+      "b": "qh-liu",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-ferry-stall",
+      "a": "qh-ferry",
+      "b": "qh-stall",
+      "steps": 1,
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-stall-north",
+      "a": "qh-stall",
+      "b": "qh-north",
+      "steps": 1,
+      "locked": true
+    }
+  ]
+}

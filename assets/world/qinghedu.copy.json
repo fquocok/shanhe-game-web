@@ -1,0 +1,1158 @@
+{
+  "schema": "SHANHE_WORLD_COPY_V0_1",
+  "area_id": "qinghedu",
+  "area_name": "青禾渡",
+  "chapter_scope": "1-240",
+  "note": "Yuki 定稿 2026-11-22 21:00 Asia/Taipei。文字自定稿逐字擷取；來源標記只放 note，不上畫面。",
+  "ui": {
+    "walk": "走過去",
+    "talk": "說話",
+    "inspect": "看一眼",
+    "enter": "進關",
+    "rest": "睡下",
+    "back": "回地圖",
+    "preparing": "準備中",
+    "locked": "未開放",
+    "quest_bar": "眼下的事",
+    "encounter": "路上出了點小事。",
+    "seed": "探索種子 {seed}（回報時請附上）",
+    "night_blocked": "這麼晚了，別去敲人家的門。",
+    "slice_done": "青禾渡這一段先到這裡。往官道分岔的路，還沒開。"
+  },
+  "nodes": {
+    "qh-hut": {
+      "label": "阿禾的茅棚",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "草簾後頭，腳底下的暖石還燙著。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "草簾掀開，霧散了。"
+        }
+      ]
+    },
+    "qh-liu": {
+      "label": "劉大娘家門口",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "沒有燈。別吵醒大娘。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "門開著，大娘拎著水桶進進出出。"
+        }
+      ]
+    },
+    "qh-zhou": {
+      "label": "周家門口",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "大門關著。傍晚那頓冬粥，今天剛好立筷兩息。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "粥剛散，簷下還有人捧著碗。"
+        }
+      ]
+    },
+    "qh-stall": {
+      "label": "村口・孫嫂餅攤",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "鏊子收著，門板沒卸。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "鏊子冒煙了。"
+        }
+      ]
+    },
+    "qh-zheng": {
+      "label": "鄭大伯門檻",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "門關著。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "門檻上有一捆茅草。"
+        }
+      ]
+    },
+    "qh-ferry": {
+      "label": "渡口・石階",
+      "blurbs": [
+        {
+          "when": {
+            "all": [
+              {
+                "time": "night"
+              },
+              {
+                "flag": "barge.held"
+              }
+            ]
+          },
+          "text": "石樁上拴著兩個黑影，連人帶小舢板。船上的燈多了幾盞。"
+        },
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "霧裡，鏢船只剩一團黑影。船上一盞燈，昏昏黃黃的，像一顆泡在水裡的蛋黃。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "霧散了。鏢船已經起錨，正慢慢地往下游去。老艄公蹲在石階上抽旱菸。"
+        }
+      ]
+    },
+    "qh-shed": {
+      "label": "老艄公的草棚後頭",
+      "blurbs": [
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "蹲在這裡，看得見船尾。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "草棚。夜裡她在這後頭蹲麻了腿。"
+        }
+      ]
+    },
+    "qh-mudroad": {
+      "label": "回家路上",
+      "blurbs": [
+        {
+          "when": {
+            "all": [
+              {
+                "time": "night"
+              },
+              {
+                "flag": "barge.held"
+              }
+            ]
+          },
+          "text": "回家的路上，霧還沒散。"
+        },
+        {
+          "when": {
+            "time": "night"
+          },
+          "text": "霧比傍晚更濃了。"
+        },
+        {
+          "when": {
+            "time": "morning"
+          },
+          "text": "路邊那灘半凍不凍的泥水坑還在。"
+        }
+      ]
+    },
+    "qh-north": {
+      "label": "官道分岔",
+      "locked_text": "還不到走的時候。",
+      "blurbs": []
+    }
+  },
+  "inspects": {
+    "zhou-morning": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "zhou-morning",
+      "title": "周家門口",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "辰時粥散。粥一散，大夥兒就往村口的餅攤湧。"
+            }
+          ]
+        }
+      }
+    },
+    "ferry-night": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "ferry-night",
+      "title": "渡口・石階",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "草棚裡傳來老艄公的鼾聲，一長一短，跟江水的聲音一唱一和。"
+            }
+          ]
+        }
+      }
+    },
+    "ferry-post": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "ferry-post",
+      "title": "渡口・石階",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "兩個賊已經不見了，小舢板也不見了。石樁上只剩一截斷繩，鬆鬆地掛著，斷口齊齊的。"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "opening": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "opening",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "那天夜裡，阿禾睡不著。"
+            },
+            {
+              "text": "不是冷，合灶燒的暖石還在她腳底下燙著；也不是餓，周家傍晚那頓冬粥，今天剛好立筷兩息。"
+            },
+            {
+              "text": "今晚，她心裡有事。她想知道，船尾那個瘦高的人，夜裡是怎麼值的。"
+            },
+            {
+              "text": "阿禾猶豫了半刻鐘，最後還是爬起來，把舊襖套在藍襖外頭，悄悄掀開草簾，溜了出去。"
+            }
+          ],
+          "advance": "出門",
+          "next": "out"
+        },
+        "out": {
+          "type": "end",
+          "auto_return": true,
+          "effects": [
+            {
+              "set_flag": "seen.opening"
+            }
+          ]
+        }
+      },
+      "note": "開場：〔正文〕第 15 章，有刪節；「船尾那個瘦高的人」一句為改寫。"
+    },
+    "pre_battle": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "pre_battle",
+      "title": "老艄公的草棚後頭",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "她躲在老艄公的草棚後頭，探出半個腦袋。霧裡，燈旁邊有一個人影，拄著長杆，一動不動。還是他。"
+            },
+            {
+              "text": "她在草棚後頭蹲了不知多久，腿都蹲麻了，正想走，忽然聽見了水聲。很輕、很小心的，嘩啦，一下，停一停，又嘩啦一下。"
+            },
+            {
+              "text": "一條小舢板慢慢地從下游摸了過來，船上蹲著兩個黑影。阿禾死死地捂住自己的嘴。"
+            }
+          ],
+          "advance": "看下去",
+          "next": "go"
+        },
+        "go": {
+          "type": "end",
+          "effects": [
+            {
+              "battle": "st15-escort"
+            }
+          ]
+        }
+      },
+      "note": "〔正文〕第 15 章，有刪節。接既有戰鬥 st15-escort，種子 39。"
+    },
+    "held": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "held",
+      "title": "老艄公的草棚後頭",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "船上的燈多了幾盞。他們沒有打人，只是拿繩子把兩個黑影綁了，連人帶小舢板拖到岸邊，拴在渡口的石樁上。"
+            },
+            {
+              "text": "方臉漢子朝岸上吼了一嗓子：「哪個村的？明兒一早天亮了，自己滾！再敢摸天馬的船，下回扔的就不是江裡了！」"
+            },
+            {
+              "text": "阿禾這才把捂嘴的手放下來，長長地吐出一口氣。一腳，一撥，一甩。原來功夫，是這個樣子的。"
+            }
+          ],
+          "advance": "回家",
+          "next": "out"
+        },
+        "out": {
+          "type": "end",
+          "auto_return": true,
+          "effects": [
+            {
+              "set_flag": "barge.held"
+            }
+          ]
+        }
+      },
+      "note": "〔正文〕第 15 章，有刪節；末兩句取自同章前文，移到這裡收束。"
+    },
+    "missed": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "missed",
+      "title": "老艄公的草棚後頭",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "choice",
+          "lines": [
+            {
+              "text": "霧太濃，這一下她沒看清。再看一次？"
+            }
+          ],
+          "choices": [
+            {
+              "id": "again",
+              "label": "再看一次",
+              "next": "again"
+            },
+            {
+              "id": "back",
+              "label": "回地圖",
+              "next": "back"
+            }
+          ]
+        },
+        "again": {
+          "type": "end",
+          "effects": [
+            {
+              "battle": "st15-escort"
+            }
+          ]
+        },
+        "back": {
+          "type": "end",
+          "auto_return": true
+        }
+      },
+      "note": "〔遊戲原創〕；「沒看清」呼應第 15 章。"
+    },
+    "sleep": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "sleep",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "她鑽回草簾裡，把滿是泥點的舊襖脫下來，搭在一邊。腳底下的暖石，已經不太燙了。"
+            }
+          ],
+          "advance": "睡下",
+          "next": "wake"
+        },
+        "wake": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "第二天一早，她頂著一張洗不太乾淨的臉出了門。"
+            }
+          ],
+          "advance": "出門",
+          "next": "out"
+        },
+        "out": {
+          "type": "end",
+          "auto_return": true,
+          "effects": [
+            {
+              "set_flag": "slept"
+            },
+            {
+              "set_time": "morning"
+            },
+            {
+              "move_to": "qh-hut"
+            }
+          ]
+        }
+      },
+      "note": "睡下〔遊戲原創〕；睡醒〔正文〕第 15 章，改寫。"
+    }
+  },
+  "npcs": {
+    "npc-boatman": {
+      "name": "老艄公",
+      "talks": [
+        {
+          "id": "boatman-night",
+          "when": {
+            "time": "night"
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "boatman-night",
+            "title": "老艄公",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "草棚裡傳來老艄公的鼾聲。別吵醒他。"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "boatman-first",
+          "when": {
+            "quest_step": [
+              "q-qh-night",
+              "go_ferry"
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "boatman-first",
+            "title": "老艄公",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "speaker": "老艄公",
+                    "text": "（瞇著眼樂了）「喲，你這臉，昨夜跟誰打架了？」"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「跟我自己。輸了。」"
+                  },
+                  {
+                    "text": "老艄公哈哈大笑，笑得菸灰都掉了。"
+                  }
+                ],
+                "advance": "看看石樁",
+                "next": "post"
+              },
+              "post": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "阿禾往石樁那邊看。兩個賊已經不見了，小舢板也不見了。石樁上只剩一截斷繩，鬆鬆地掛著，斷口齊齊的。"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「放了？」"
+                  },
+                  {
+                    "speaker": "老艄公",
+                    "text": "「天沒亮就放了。鏢船的人走之前割的繩子。人家是走江湖的，不愛跟官府打交道，賊打一頓、凍一夜、嚇一嚇，就放了。省事。」"
+                  }
+                ],
+                "advance": "問船尾那個瘦高的",
+                "next": "tall"
+              },
+              "tall": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "阿禾",
+                    "text": "「大爺，昨天船尾那個瘦高的，你看見了沒有？」"
+                  },
+                  {
+                    "speaker": "老艄公",
+                    "text": "（把菸桿在石階上磕了磕）「看見了。那種人啊，一頓要吃三碗乾飯。」"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「三碗？」"
+                  },
+                  {
+                    "speaker": "老艄公",
+                    "text": "「乾飯。不是粥。你喝的那叫粥，立不住筷子的。人家吃的那叫飯，筷子插上去，倒都倒不下來。」"
+                  },
+                  {
+                    "text": "阿禾低頭看了看自己的手。細細的，瘦瘦的，指節還有點凸。三碗乾飯。她到現在，還沒吃過一碗。"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「……難怪。」"
+                  },
+                  {
+                    "text": "她摸了摸胸口的布袋。二十七文，加上這三天攤上的三文，三十文。離三碗乾飯，還遠得很。"
+                  },
+                  {
+                    "text": "阿禾裹緊了滿是泥點的舊襖，轉身往孫嫂的攤子走去。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "heard.three_bowls"
+                  }
+                ]
+              }
+            },
+            "note": "〔正文〕第 15 章，有刪節。"
+          }
+        },
+        {
+          "id": "boatman-after",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "boatman-after",
+            "title": "老艄公",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "老艄公",
+                    "text": "「還看？船早走遠了。去，孫嫂那兒該冒煙了。」"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "npc-sun": {
+      "name": "孫嫂",
+      "talks": [
+        {
+          "id": "sun-night",
+          "when": {
+            "time": "night"
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "sun-night",
+            "title": "孫嫂",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "鏊子收著，門板沒卸。"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "sun-tokens",
+          "when": {
+            "any": [
+              {
+                "quest_step": [
+                  "q-qh-tokens",
+                  "go_stall"
+                ]
+              },
+              {
+                "quest_step": [
+                  "q-qh-tokens",
+                  "round"
+                ]
+              }
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "tokens",
+            "title": "村口・孫嫂餅攤",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "speaker": "孫嫂",
+                    "text": "「來了？今兒排得長，快快快。」"
+                  },
+                  {
+                    "text": "先給錢，拿牌子，叫到牌子拿餅。一道口子是一號，兩道口子是二號。給一文，拿一片；孫嫂攤好一張，她就叫一個號。"
+                  }
+                ],
+                "advance": "站到攤子前頭",
+                "next": "ask"
+              },
+              "ask": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "一號剛拿了餅走人。孫嫂攤好一張，抬頭：「這張給誰？」前頭擠著一個嬸子，說她趕著回去餵雞；隊裡一個大爺舉著兩道口子的牌子。"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "two",
+                    "label": "「二號！」",
+                    "next": "right"
+                  },
+                  {
+                    "id": "aunt",
+                    "label": "先給趕時間的嬸子",
+                    "next": "aunt"
+                  },
+                  {
+                    "id": "jar",
+                    "label": "先數數錢罐",
+                    "next": "jar"
+                  }
+                ]
+              },
+              "aunt": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "大爺的兩道口子還舉在半空。孫嫂瞪過來：「牌子是你發的，你自己不認？」阿禾趕緊改口：「……二號！」"
+                  }
+                ],
+                "advance": "「二號！」",
+                "next": "right"
+              },
+              "jar": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "她才伸手去摸錢罐，孫嫂鍋鏟一揮：「錢在罐裡，罐不會跑！餅要焦了！」先叫號，錢等收攤再數。"
+                  }
+                ],
+                "advance": "「二號！」",
+                "next": "right"
+              },
+              "right": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "拿二號牌的大爺走上前，交牌，接餅，走人。嬸子看了看自己手裡的五號，不擠了。"
+                  }
+                ],
+                "advance": "下一張",
+                "next": "next"
+              },
+              "next": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "第二張起鍋。「三號！」隊伍往前挪了一步，沒有人擠。"
+                  },
+                  {
+                    "text": "十片牌子轉完一圈，第一號也回來了，又從一號發起。"
+                  }
+                ],
+                "advance": "收攤",
+                "next": "close"
+              },
+              "close": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "人散了，孫嫂坐在小板凳上，數了兩遍錢罐裡的銅錢。一文不多，一文不少。"
+                  },
+                  {
+                    "text": "她從鏊子邊上拿起一塊邊角有點焦的餅，往阿禾手裡一塞，又數了一文給她。"
+                  },
+                  {
+                    "speaker": "孫嫂",
+                    "text": "「明兒個還來。」"
+                  },
+                  {
+                    "text": "阿禾把一文錢放進胸口的小布袋裡，咬了一口焦邊。焦得有點苦，但是熱的。"
+                  }
+                ],
+                "closing": "一文，一塊焦邊",
+                "result": "TOKENS_DONE",
+                "terminal_label": "一文，一塊焦邊",
+                "effects": [
+                  {
+                    "set_flag": "tokens.round_done"
+                  }
+                ]
+              }
+            },
+            "note": "流程〔遊戲原創〕，規矩〔正文〕第 7 章；收攤〔正文〕第 7 章，組合。"
+          }
+        },
+        {
+          "id": "sun-after",
+          "when": {
+            "quest_done": "q-qh-tokens"
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "sun-after",
+            "title": "孫嫂",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "孫嫂",
+                    "text": "「焦邊吃了沒？吃了就回去，別在這兒擋道。」"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "sun-before",
+          "when": {
+            "not": {
+              "quest_done": "q-qh-night"
+            }
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "sun-before",
+            "title": "孫嫂",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "孫嫂",
+                    "text": "「你這臉是去江裡撈泥鰍了？別湊鏊子邊，泥掉進餅裡我賣給誰？」"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "sun-default",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "sun-default",
+            "title": "孫嫂",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "孫嫂",
+                    "text": "「去去去，小孩子別擋道，這兒正忙著呢！」"
+                  }
+                ]
+              }
+            },
+            "note": "〔正文〕第 7 章原句，借作忙時的預設。"
+          }
+        }
+      ]
+    },
+    "npc-liu": {
+      "name": "劉大娘",
+      "talks": [
+        {
+          "id": "liu-night",
+          "when": {
+            "time": "night"
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "liu-night",
+            "title": "劉大娘",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "沒有燈。別吵醒大娘。"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "liu-first",
+          "when": {
+            "not": {
+              "flag": "talked.liu-first"
+            }
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "liu-first",
+            "title": "劉大娘",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "劉大娘正好推開門，手裡拎著一桶水。看見她，愣了一下。"
+                  },
+                  {
+                    "speaker": "劉大娘",
+                    "text": "「哎喲，這是掉哪個坑裡了？過來過來。」"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "wipe",
+                    "label": "讓大娘擦",
+                    "next": "wipe"
+                  },
+                  {
+                    "id": "self",
+                    "label": "「我自己來。」",
+                    "next": "self"
+                  }
+                ]
+              },
+              "wipe": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "劉大娘撩起水，替她把臉擦了一遍，又擦一遍。泥是淡了，臉也花了。"
+                  },
+                  {
+                    "speaker": "劉大娘",
+                    "text": "「越擦越花。算了，去吧，別往江邊跑。」"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "face.wiped"
+                  }
+                ]
+              },
+              "self": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "她捧了一把冷水，往臉上一抹。越抹越髒。"
+                  },
+                  {
+                    "speaker": "劉大娘",
+                    "text": "（嘆氣）「瘦得跟猴兒似的，還一臉泥。去吧。」"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "face.wiped"
+                  }
+                ]
+              }
+            },
+            "note": "〔遊戲原創〕；開門打水借第 7 章，「越抹越髒」借第 15 章，「瘦得跟猴兒似的」借第 1 章。"
+          }
+        },
+        {
+          "id": "liu-after",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "liu-after",
+            "title": "劉大娘",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "劉大娘",
+                    "text": "「早上的粥喝了沒有？沒喝，周家門口還有人在。」"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "npc-zheng": {
+      "name": "鄭大伯",
+      "talks": [
+        {
+          "id": "zheng-night",
+          "when": {
+            "time": "night"
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "zheng-night",
+            "title": "鄭大伯",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "門關著。"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "zheng-first-bowls",
+          "when": {
+            "all": [
+              {
+                "not": {
+                  "flag": "talked.zheng-first"
+                }
+              },
+              {
+                "flag": "heard.three_bowls"
+              }
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "zheng-first-bowls",
+            "title": "鄭大伯",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "鄭大伯坐在門檻上紮茅草，抬頭看她一眼，又看她那張臉。"
+                  },
+                  {
+                    "speaker": "鄭大伯",
+                    "text": "「竹牌還好使？邊給你磨得光溜溜的，不扎手吧？」"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「好使。孫嫂問誰教的，我說跟大伯學的。」"
+                  },
+                  {
+                    "text": "鄭大伯被這一句說得渾身舒坦，捋了捋下巴。"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「大伯，你一頓吃幾碗乾飯？」"
+                  },
+                  {
+                    "speaker": "鄭大伯",
+                    "text": "「乾飯？」（想了半天）「過年那頓，算不算？」"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "talked.zheng-first"
+                  }
+                ]
+              }
+            },
+            "note": "〔遊戲原創〕；坐門檻第 5 章，紮茅草第 16 章，磨竹牌邊第 7 章。"
+          }
+        },
+        {
+          "id": "zheng-first",
+          "when": {
+            "not": {
+              "flag": "talked.zheng-first"
+            }
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "zheng-first",
+            "title": "鄭大伯",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "鄭大伯坐在門檻上紮茅草，抬頭看她一眼，又看她那張臉。"
+                  },
+                  {
+                    "speaker": "鄭大伯",
+                    "text": "「竹牌還好使？邊給你磨得光溜溜的，不扎手吧？」"
+                  },
+                  {
+                    "speaker": "阿禾",
+                    "text": "「好使。孫嫂問誰教的，我說跟大伯學的。」"
+                  },
+                  {
+                    "text": "鄭大伯被這一句說得渾身舒坦，捋了捋下巴。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "talked.zheng-first"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "zheng-after",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "zheng-after",
+            "title": "鄭大伯",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "speaker": "鄭大伯",
+                    "text": "「去吧去吧，孫嫂那兒排長了，又要嚷。」"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "events": {
+    "ev-dog-fog": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "ev-dog-fog",
+      "title": "青禾渡",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "choice",
+          "lines": [
+            {
+              "text": "霧裡忽然有狗叫了一聲，不遠。阿禾停住腳。叫醒了一條狗，等於叫醒半個村子。"
+            }
+          ],
+          "choices": [
+            {
+              "id": "crouch",
+              "label": "蹲下不動",
+              "next": "crouch"
+            },
+            {
+              "id": "around",
+              "label": "繞遠一點走",
+              "next": "around"
+            },
+            {
+              "id": "hush",
+              "label": "小聲噓牠",
+              "next": "hush"
+            }
+          ]
+        },
+        "crouch": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "她蹲在路邊，大氣也不敢喘。腳步聲啪嗒啪嗒走近，聞了聞她的草鞋，又啪嗒啪嗒走了。"
+            }
+          ],
+          "closing": "沒吵醒人。"
+        },
+        "around": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "她貼著籬笆繞了半圈。狗叫了兩聲，沒人開門。"
+            }
+          ],
+          "closing": "沒吵醒人。"
+        },
+        "hush": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "「噓——」狗歪著頭看她，不叫了，搖了兩下尾巴，回去趴著。牠大概也是值夜的。"
+            }
+          ],
+          "closing": "沒吵醒人。"
+        }
+      },
+      "note": "〔遊戲原創〕路上小事，可整段刪（連同 enc-night-fog）。"
+    }
+  },
+  "quests": {
+    "q-qh-night": {
+      "title": "那一夜",
+      "steps": {
+        "go_shed": "沿著熟悉的路摸到渡口，躲到老艄公的草棚後頭。",
+        "watch": "別出聲，看著船尾。",
+        "go_home": "回家。路上霧還沒散。",
+        "sleep": "回茅棚睡下。",
+        "go_ferry": "又跑去渡口看看。"
+      }
+    },
+    "q-qh-tokens": {
+      "title": "今天的竹牌",
+      "steps": {
+        "go_stall": "今天的竹牌，還等著她去發。",
+        "round": "喊號、收錢、發牌。"
+      },
+      "done_label": "一文，一塊焦邊"
+    }
+  }
+}

@@ -1154,3 +1154,182 @@ body { min-height: 100dvh; }
 }
 .event-screen .credits { color: var(--paper-aged); }
 .event-screen .controls { padding: 0.4rem 0.7rem 0; }
+
+/* —— 第 3 期：青禾渡區域圖 —— */
+.world-head h1 { margin-bottom: 0.1rem; }
+.world-quest {
+  margin: 0.15rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--paper-aged);
+}
+.world-quest-k {
+  font-family: var(--font-kai);
+  color: var(--lantern);
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+}
+.world-quest-text strong {
+  font-family: var(--font-kai);
+  font-weight: 400;
+  color: var(--paper);
+  margin-right: 0.45rem;
+}
+.world-quest-text.flash { animation: world-flash 900ms ease-out 1; }
+@keyframes world-flash { from { color: var(--lantern); } to { color: inherit; } }
+.world-sheet { min-height: 300px; }
+.world-sheet.is-night {
+  background: linear-gradient(180deg, rgba(196, 186, 170, 0.97), rgba(160, 150, 134, 0.94));
+}
+.world-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.world-river {
+  fill: none;
+  stroke: #16333A;
+  stroke-width: 14px;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+.world-edge {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.world-edge.is-closed { stroke-dasharray: 5 6; opacity: 0.42; }
+.world-edge.is-locked { stroke-dasharray: 2 7; opacity: 0.3; }
+/* 點：外框按鈕至少 44×44（熱區），墨點畫小一點；標籤在點下方。 */
+.world-node {
+  position: absolute;
+  transform: translate(-50%, -22px);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  touch-action: manipulation;
+  cursor: pointer;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+}
+.world-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: block;
+  position: relative;
+}
+.world-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 3px rgba(243, 230, 216, 0.85);
+}
+.world-node-label {
+  margin-top: -6px;
+  font-family: var(--font-kai);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+.world-node.is-closed .world-dot::after { background: var(--ink-soft); opacity: 0.55; }
+.world-node.is-closed .world-node-label { color: var(--ink-soft); }
+.world-node.is-locked .world-dot::after { background: transparent; border: 1.5px dashed var(--ink-soft); box-shadow: none; }
+.world-node.is-locked .world-node-label { color: var(--ink-soft); }
+.world-node.is-target .world-dot::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 2px solid var(--seal);
+  opacity: 0.8;
+}
+.world-node.is-selected .world-dot::after { background: var(--seal); }
+.world-node:focus-visible { outline: 2px solid var(--lantern); outline-offset: 2px; border-radius: 8px; }
+.world-token {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: var(--seal);
+  color: #f3e6d8;
+  font-family: var(--font-kai);
+  font-size: 0.9rem;
+  line-height: 28px;
+  text-align: center;
+  z-index: 3;
+  pointer-events: none;
+  transition: left 240ms ease-in-out, top 240ms ease-in-out;
+  box-shadow: 0 2px 6px rgba(28, 24, 20, 0.3);
+}
+.world-token.no-motion { transition: none; }
+.world-drawer {
+  margin: 0 0.65rem;
+  padding: 0.55rem 0.8rem 0.6rem;
+  background: rgba(231, 216, 196, 0.1);
+  border-top: 1px solid rgba(201, 181, 154, 0.35);
+  min-height: 7.2rem;
+  flex-shrink: 0;
+}
+.world-node-name {
+  margin: 0;
+  font-family: var(--font-kai);
+  font-size: 1.05rem;
+  color: var(--paper);
+}
+.world-node-blurb {
+  margin: 0.2rem 0 0.45rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--paper-aged);
+  min-height: 1.4rem;
+}
+.world-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.world-act { min-height: 44px; min-width: 88px; }
+.world-locked-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--paper-aged);
+  font-size: 0.85rem;
+}
+.world-foot { flex-wrap: wrap; }
+.world-foot .btn { min-height: 44px; }
+.world-seed {
+  margin: 0;
+  flex: 1;
+  text-align: right;
+  font-size: 0.66rem;
+  color: var(--paper-aged);
+}
+.world-build { margin: 0.1rem 0.85rem 0; text-align: right; }
+@media (prefers-reduced-motion: reduce) {
+  .world-token { transition: none; }
+  .world-quest-text.flash { animation: none; }
+}

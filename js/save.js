@@ -1,10 +1,53 @@
 (() => {
   const KEY = "shanhe.save.v1";
-  const SCHEMA_VERSION = 1;
+  const SCHEMA_VERSION = 2;
   const GAME_ID = "shanhe";
 
-  // 未來版本把遷移函數依序掛在這裡，例如 2: (save) => { ...; save.schema_version = 2; return save; }
-  const MIGRATIONS = {};
+  // 第 3 期：青禾渡區域圖的預設位置與布袋起始文數（第 15 章結尾她布袋裡三十文，遊戲推估）。
+  const WORLD_DEFAULTS = { area: "qinghedu", node: "qh-hut", time: "night" };
+  const WALLET_START = 30;
+
+  function newExploreSeed() {
+    return 100000 + Math.floor(Math.random() * 900000);
+  }
+
+  function emptyWorld() {
+    return { ...WORLD_DEFAULTS, explore_seed: newExploreSeed(), step_count: 0 };
+  }
+
+  function isObj(value) {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  // 依序掛遷移函數：key 是目標版本。
+  const MIGRATIONS = {
+    2: (save) => {
+      const next = { ...save };
+      next.world = emptyWorld();
+      next.quests = {};
+      next.flags = {};
+      next.wallet = { wen: WALLET_START };
+      const stages = isObj(save.stages) ? save.stages : {};
+      const escort = stages["st15-escort"];
+      const mud = stages["st15-mud"];
+      const held = escort && escort.status === "cleared" && escort.result === "VICTORY";
+      const mudDone = mud && mud.status === "cleared";
+      // 已打過的關不逼玩家重打（Yuki 定稿：兩關都過 → 任務一停在 go_ferry，早上，茅棚）。
+      if (held && mudDone) {
+        next.world.time = "morning";
+        next.world.node = "qh-hut";
+        next.quests["q-qh-night"] = { status: "active", step: "go_ferry", started_at: save.updated_at || null, done_at: null };
+        next.flags = { "seen.opening": true, "barge.held": true, "mud.done": true, slept: true };
+      } else if (held) {
+        next.world.time = "night";
+        next.world.node = "qh-shed";
+        next.quests["q-qh-night"] = { status: "active", step: "go_home", started_at: save.updated_at || null, done_at: null };
+        next.flags = { "seen.opening": true, "barge.held": true };
+      }
+      next.schema_version = 2;
+      return next;
+    },
+  };
 
   function nowIso() {
     const d = new Date();
@@ -23,7 +66,29 @@
       updated_at: null,
       stages: {},
       settings: { seed_policy: "recommended", battle_control: "manual" },
+      world: emptyWorld(),
+      quests: {},
+      flags: {},
+      wallet: { wen: WALLET_START },
     };
+  }
+
+  function normalizeWorld(save) {
+    const w = isObj(save.world) ? save.world : {};
+    const seed = Number(w.explore_seed);
+    save.world = {
+      ...w,
+      area: typeof w.area === "string" && w.area ? w.area : WORLD_DEFAULTS.area,
+      node: typeof w.node === "string" && w.node ? w.node : WORLD_DEFAULTS.node,
+      time: w.time === "morning" || w.time === "night" ? w.time : WORLD_DEFAULTS.time,
+      explore_seed: Number.isFinite(seed) && seed > 0 ? Math.floor(seed) : newExploreSeed(),
+      step_count: Math.max(0, Math.floor(Number(w.step_count) || 0)),
+    };
+    if (!isObj(save.quests)) save.quests = {};
+    if (!isObj(save.flags)) save.flags = {};
+    if (!isObj(save.wallet) || !Number.isFinite(Number(save.wallet.wen))) save.wallet = { wen: WALLET_START };
+    else save.wallet = { ...save.wallet, wen: Number(save.wallet.wen) };
+    return save;
   }
 
   function migrate(raw) {
@@ -52,6 +117,7 @@
     if (!save.settings.seed_policy) save.settings.seed_policy = "recommended";
     if (save.settings.battle_control !== "auto") save.settings.battle_control = "manual";
     save.schema_version = Math.max(1, Number(save.schema_version) || 1);
+    if (save.schema_version >= 2) normalizeWorld(save);
     save.game_id = GAME_ID;
     return save;
   }
@@ -176,9 +242,19 @@
     return persist(save);
   }
 
+  /** 讀出、交給 fn 修改、再寫回。fn 回傳值若是物件就當成新的存檔。 */
+  function update(fn) {
+    const save = load();
+    const next = fn(save) || save;
+    return persist(next);
+  }
+
   const api = {
     KEY,
     SCHEMA_VERSION,
+    WORLD_DEFAULTS,
+    WALLET_START,
+    update,
     migrate,
     emptySave,
     load,

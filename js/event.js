@@ -50,7 +50,7 @@
     const seen = walkScenes(script);
     Object.entries(scenes).forEach(([id, scene]) => {
       const type = scene.type;
-      if (!["dialogue", "choice", "timed_choice", "standoff", "ending"].includes(type)) {
+      if (!["dialogue", "choice", "timed_choice", "standoff", "ending", "end"].includes(type)) {
         throw new Error("不支援的事件類型：" + type);
       }
       if (type === "ending") {
@@ -228,8 +228,11 @@
     setEnding(item);
     if (typeof hooks.onFinished === "function") {
       hooks.onFinished({
-        result: item.result,
-        terminal_label: item.terminal_label,
+        result: item.result || null,
+        terminal_label: item.terminal_label || null,
+        effects: item.effects || [],
+        auto_return: Boolean(item.auto_return),
+        scene_id: sceneId,
       });
     }
   }
@@ -271,7 +274,8 @@
       scrollBeats();
       return;
     }
-    if (type === "ending") {
+    if (type === "ending" || type === "end") {
+      // end：第 3 期世界層收束段，不寫關卡結果，只回傳 effects 給地圖。
       appendLines(item.lines, false);
       setPrompt("", false);
       setTimer(false, 0);
@@ -419,18 +423,25 @@
     clearTimers();
     hold = null;
     const src = (node && node.copy_src) ? ("assets/" + node.copy_src) : hooks.copyUrl;
-    if (!src) return Promise.reject(new Error("此關沒有文案"));
-    return fetch(src).then((res) => {
-      if (!res.ok) throw new Error("事件文案載入失敗");
-      return res.json();
-    }).then((data) => {
+    let loading;
+    if (hooks.script) {
+      // 第 3 期：地圖直接交一份事件稿物件（NPC 對話、看一眼、路上小事）。
+      loading = Promise.resolve(hooks.script);
+    } else {
+      if (!src) return Promise.reject(new Error("此關沒有文案"));
+      loading = fetch(src).then((res) => {
+        if (!res.ok) throw new Error("事件文案載入失敗");
+        return res.json();
+      });
+    }
+    return loading.then((data) => {
       validateScript(data);
       copy = data;
       const title = $("event-title");
       const meta = $("event-meta");
       const credits = $("event-credits");
-      if (title) title.textContent = copy.title || (node && node.title) || "";
-      if (meta) meta.textContent = copy.location || "";
+      if (title) title.textContent = hooks.title != null ? hooks.title : (copy.title || (node && node.title) || "");
+      if (meta) meta.textContent = hooks.meta != null ? hooks.meta : (copy.location || "");
       if (credits) credits.textContent = copy.credits || "";
       const host = $("event-beats");
       if (host) host.innerHTML = "";

@@ -24,6 +24,30 @@
     <div class="boot-bar"><span id="boot-bar"></span></div>
   </div>
 
+  <section id="world-screen" class="map-screen world-screen" hidden>
+    <header class="map-head world-head">
+      <p class="series">山河武俠</p>
+      <h1 id="world-title">青禾渡</h1>
+      <p id="world-quest" class="world-quest" role="status" aria-live="polite">
+        <span id="world-quest-k" class="world-quest-k">眼下的事</span>
+        <span id="world-quest-text" class="world-quest-text"></span>
+      </p>
+    </header>
+    <div id="world-sheet" class="map-sheet world-sheet" aria-label="青禾渡"></div>
+    <section id="world-drawer" class="world-drawer" aria-live="polite">
+      <p id="world-node-name" class="world-node-name"></p>
+      <p id="world-node-blurb" class="world-node-blurb"></p>
+      <div id="world-actions" class="world-actions"></div>
+    </section>
+    <p id="world-toast" class="map-toast" hidden></p>
+    <footer class="map-foot world-foot">
+      <button type="button" id="btn-world-stages" class="btn text">關卡回顧</button>
+      <button type="button" id="btn-world-reset" class="btn text">重設進度</button>
+      <p id="world-seed" class="world-seed"></p>
+    </footer>
+    <p class="build-label world-build" hidden></p>
+  </section>
+
   <section id="map-screen" class="map-screen" hidden>
     <header class="map-head">
       <p class="series">山河武俠</p>
@@ -33,6 +57,7 @@
     <div id="map-sheet" class="map-sheet" aria-label="青禾渡關卡地圖"></div>
     <p id="map-toast" class="map-toast" hidden></p>
     <footer class="map-foot">
+      <button type="button" id="btn-map-world" class="btn text">回地圖</button>
       <button type="button" id="btn-reset-save" class="btn text">重設進度</button>
       <p class="build-label" hidden></p>
     </footer>
@@ -162,6 +187,8 @@
   <script src="js/motion.js"></script>
   <script src="js/save.js"></script>
   <script src="js/map.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/worldmap.js"></script>
   <script src="js/tutorial.js"></script>
   <script src="js/event.js"></script>
   <script src="js/app.js"></script>

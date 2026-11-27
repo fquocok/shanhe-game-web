@@ -1,7 +1,7 @@
 /* Pyodide battle worker. UI thread never recomputes damage. */
 let pyodide = null;
 let ready = false;
-const WORKSPACE = "/workspace";
+const WORKSPACE = "/shanhe";
 
 function post(payload) {
   self.postMessage(payload);

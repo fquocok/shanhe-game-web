@@ -560,7 +560,10 @@
       }
       render();
       consumeEvents(state.events || [], wasEnded);
-      if (state.terminal_result && !wasEnded) recordBattleResult(state);
+      if (state.terminal_result && !wasEnded) {
+        sessionResult = state.terminal_result;
+        recordBattleResult(state);
+      }
       maybeStartAuto();
     }
     return payload;
@@ -667,6 +670,10 @@
   let engineLoading = null;
   let artMovesReady = null;
   let battleResultSaved = false;
+  // 第 3 期：從青禾渡區域圖進關時，離關要回到區域圖並交回結果。
+  let stageReturn = null;
+  let sessionResult = null;
+  let worldReady = false;
 
   function hideScreens() {
     boot.hidden = true;
@@ -674,6 +681,7 @@
     if ($("map-screen")) $("map-screen").hidden = true;
     if ($("tutorial-screen")) $("tutorial-screen").hidden = true;
     if ($("event-screen")) $("event-screen").hidden = true;
+    if ($("world-screen")) $("world-screen").hidden = true;
     fatal.hidden = true;
   }
 
@@ -684,6 +692,7 @@
     else if (id === "map") $("map-screen").hidden = false;
     else if (id === "tutorial") $("tutorial-screen").hidden = false;
     else if (id === "event") $("event-screen").hidden = false;
+    else if (id === "world") $("world-screen").hidden = false;
   }
 
   function setHash(path) {
@@ -735,14 +744,43 @@
   function showMap() {
     stopAuto();
     currentStage = null;
+    stageReturn = null;
+    if (window.ShanheWorldMap) window.ShanheWorldMap.deactivate();
     if (window.ShanheMap) window.ShanheMap.render();
     showScreen("map");
     setHash("map");
   }
 
-  function enterStage(node) {
+  function showWorld() {
+    stopAuto();
+    currentStage = null;
+    stageReturn = null;
+    if (!worldReady || !window.ShanheWorldMap) {
+      showMap();
+      return;
+    }
+    window.ShanheWorldMap.show();
+  }
+
+  /** 離開關卡：從區域圖進來的回區域圖並交回結果，否則回關卡回顧。 */
+  function leaveStage() {
+    stopAuto();
+    if (stageReturn) {
+      const fn = stageReturn;
+      const result = sessionResult;
+      stageReturn = null;
+      currentStage = null;
+      fn(result);
+      return;
+    }
+    showMap();
+  }
+
+  function enterStage(node, opts) {
     if (!node) return;
     currentStage = node;
+    stageReturn = (opts && opts.onReturn) || null;
+    sessionResult = null;
     if (window.ShanheSave) window.ShanheSave.recordAttempt(node.id, { last_seed: node.seed });
     if (node.kind === "tutorial") {
       enterTutorial(node);
@@ -765,7 +803,8 @@
     window.ShanheEvent.start({
       node,
       onFinished: (payload) => {
-        if (window.ShanheSave) {
+        sessionResult = payload.result || sessionResult;
+        if (window.ShanheSave && payload.result) {
           window.ShanheSave.recordResult(node.id, {
             result: payload.result,
             terminal_label: payload.terminal_label,
@@ -782,6 +821,7 @@
     showScreen("tutorial");
     setHash("stage/" + node.id);
     window.ShanheTutorial.onFinished = (payload) => {
+      sessionResult = payload.result || sessionResult;
       if (window.ShanheSave) {
         window.ShanheSave.recordResult(node.id, {
           result: payload.result,
@@ -824,12 +864,14 @@
       if (window.ShanheSave) window.ShanheSave.reset();
       if (window.ShanheMap) window.ShanheMap.render();
       close();
+      if (window.ShanheWorldMap) window.ShanheWorldMap.resetView();
+      if (worldReady && $("world-screen") && !$("world-screen").hidden) window.ShanheWorldMap.show();
     };
     no.onclick = close;
   }
 
   function routeFromHash() {
-    const raw = (location.hash || "#/map").replace(/^#\/?/, "");
+    const raw = (location.hash || "#/world").replace(/^#\/?/, "");
     const parts = raw.split("/").filter(Boolean);
     if (parts[0] === "stage" && parts[1] && manifest) {
       const node = (manifest.nodes || []).find((n) => n.id === parts[1]);
@@ -841,14 +883,44 @@
         return;
       }
     }
-    showMap();
+    if (parts[0] === "map") {
+      showMap();
+      return;
+    }
+    showWorld();
   }
 
-  $("btn-back-map").onclick = () => showMap();
-  $("tutorial-back").onclick = () => showMap();
-  if ($("event-back")) $("event-back").onclick = () => showMap();
+  $("btn-back-map").onclick = () => leaveStage();
+  $("tutorial-back").onclick = () => leaveStage();
+  if ($("event-back")) {
+    $("event-back").onclick = () => {
+      // 區域圖播的對話／看一眼／路上小事沒有 currentStage，回區域圖。
+      if (!currentStage && window.ShanheWorldMap && window.ShanheWorldMap.isActive()) {
+        window.ShanheWorldMap.back();
+        return;
+      }
+      leaveStage();
+    };
+  }
+  if ($("btn-world-stages")) $("btn-world-stages").onclick = () => showMap();
+  if ($("btn-world-reset")) $("btn-world-reset").onclick = () => confirmReset();
+  if ($("btn-map-world")) $("btn-map-world").onclick = () => showWorld();
   if ($("event-action")) $("event-action").onclick = () => window.ShanheEvent && window.ShanheEvent.advance();
   $("tutorial-action").onclick = () => window.ShanheTutorial && window.ShanheTutorial.playChoice();
+
+  function loadWorld() {
+    const get = (path) => fetch("assets/" + path).then((res) => {
+      if (!res.ok) throw new Error("區域圖載入失敗：" + path);
+      return res.json();
+    });
+    return get("world/qinghedu.map.json").then((map) => Promise.all([
+      get(map.copy_src), get(map.quests_src), get(map.encounters_src),
+    ]).then(([copy, quests, encounters]) => ({ map, copy, quests, encounters })))
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  }
 
   const bootStarted = performance.now();
   showScreen("boot");
@@ -862,7 +934,8 @@
     }),
     fetch("version.json", { cache: "no-store" }).then((res) => res.ok ? res.json() : {}).catch(() => ({})),
     ensureAssets(),
-  ]).then(([man, ver]) => {
+    loadWorld(),
+  ]).then(([man, ver, , world]) => {
     manifest = man;
     versionInfo = ver || {};
     if (!versionInfo.channel) versionInfo.channel = "private";
@@ -873,6 +946,18 @@
       onEnter: enterStage,
       onResetRequest: confirmReset,
     });
+    if (world && window.ShanheWorldMap) {
+      try {
+        window.ShanheWorldMap.mount({
+          data: { ...world, manifest },
+          hooks: { showScreen, setHash, enterStage, showFatal },
+        });
+        worldReady = true;
+      } catch (error) {
+        console.error(error);
+        worldReady = false;
+      }
+    }
     metrics.mapReadyMs = Math.round(performance.now() - bootStarted);
     window.__SHANHE_METRICS__ = metrics;
     routeFromHash();

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_QUEST_V0_1",
+  "area_id": "qinghedu",
+  "quests": [
+    {
+      "id": "q-qh-night",
+      "kind": "main",
+      "starts_when": {},
+      "steps": [
+        {
+          "id": "go_shed",
+          "target_node": "qh-shed",
+          "done_when": {
+            "flag": "reached.shed"
+          }
+        },
+        {
+          "id": "watch",
+          "target_node": "qh-shed",
+          "done_when": {
+            "flag": "barge.held"
+          }
+        },
+        {
+          "id": "go_home",
+          "target_node": "qh-mudroad",
+          "done_when": {
+            "flag": "mud.done"
+          }
+        },
+        {
+          "id": "sleep",
+          "target_node": "qh-hut",
+          "done_when": {
+            "flag": "slept"
+          }
+        },
+        {
+          "id": "go_ferry",
+          "target_node": "qh-ferry",
+          "done_when": {
+            "flag": "heard.three_bowls"
+          }
+        }
+      ],
+      "on_complete": []
+    },
+    {
+      "id": "q-qh-tokens",
+      "kind": "daily",
+      "starts_when": {
+        "quest_done": "q-qh-night"
+      },
+      "steps": [
+        {
+          "id": "go_stall",
+          "target_node": "qh-stall",
+          "done_when": {
+            "any": [
+              {
+                "flag": "tokens.at_stall"
+              },
+              {
+                "flag": "tokens.round_done"
+              }
+            ]
+          }
+        },
+        {
+          "id": "round",
+          "target_node": "qh-stall",
+          "done_when": {
+            "flag": "tokens.round_done"
+          }
+        }
+      ],
+      "on_complete": [
+        {
+          "wallet_add": 1
+        },
+        {
+          "set_flag": "got.burnt_edge"
+        }
+      ]
+    }
+  ]
+}

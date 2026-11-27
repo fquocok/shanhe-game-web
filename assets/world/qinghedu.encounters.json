@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_ENCOUNTER_TABLE_V0_1",
+  "area_id": "qinghedu",
+  "note": "enc-night-fog 是〔遊戲原創〕路上小事「霧裡的狗」，不開打；要刪就連同 events.ev-dog-fog 整段刪。",
+  "tables": {
+    "enc-night-fog": {
+      "when": {
+        "time": "night"
+      },
+      "chance_per_step": 0.35,
+      "max_per_outing": 1,
+      "entries": [
+        {
+          "id": "ev-dog-fog",
+          "weight": 1,
+          "type": "event",
+          "event": "ev-dog-fog",
+          "original": true
+        }
+      ]
+    }
+  },
+  "scripted": [
+    {
+      "id": "enc-barge-raid",
+      "node": "qh-shed",
+      "quest_step": [
+        "q-qh-night",
+        "watch"
+      ],
+      "type": "battle",
+      "stage_id": "st15-escort",
+      "after": {
+        "VICTORY": "held",
+        "DEFEAT": "missed"
+      }
+    },
+    {
+      "id": "enc-mud-road",
+      "node": "qh-mudroad",
+      "quest_step": [
+        "q-qh-night",
+        "go_home"
+      ],
+      "type": "tutorial",
+      "stage_id": "st15-mud",
+      "after_effects": {
+        "*": [
+          {
+            "set_flag": "mud.done"
+          }
+        ]
+      }
+    }
+  ]
+}
