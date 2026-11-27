@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_AREA_PATCH_V0_1",
+  "area_id": "qinghedu",
+  "season": "layue",
+  "enabled": true,
+  "note": "臘月補丁（〔正文〕第 16 章）：時節 layue 才併進青禾渡區域圖。沒有玩家字；字在 qinghedu.layue.copy.json。",
+  "when": {
+    "season": "layue"
+  },
+  "always_node_actions": {
+    "qh-hut": [
+      {
+        "id": "pass-days",
+        "type": "rest",
+        "script": "layue-open",
+        "label": "pass_days",
+        "when": {
+          "all": [
+            {
+              "quest_done": "q-qh-tokens"
+            },
+            {
+              "flag": "bigmap.back"
+            },
+            {
+              "not": {
+                "season": "layue"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "add_nodes": [
+    {
+      "id": "qh-li",
+      "x": 38,
+      "y": 24,
+      "actions": [
+        {
+          "id": "talk-li",
+          "type": "talk",
+          "npc": "npc-li",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "quest_step": [
+                      "q-qh-hemai",
+                      "collect"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "flag": "paid.li"
+                    }
+                  }
+                ]
+              },
+              {
+                "quest_step": [
+                  "q-qh-hemai",
+                  "li"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-wang",
+      "x": 88,
+      "y": 80,
+      "actions": [
+        {
+          "id": "talk-wang",
+          "type": "talk",
+          "npc": "npc-wang",
+          "when": {
+            "all": [
+              {
+                "quest_step": [
+                  "q-qh-hemai",
+                  "collect"
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "not": {
+                      "flag": "paid.wang"
+                    }
+                  },
+                  {
+                    "all": [
+                      {
+                        "flag": "coin.west.swapped"
+                      },
+                      {
+                        "not": {
+                          "flag": "coin.wang.swapped"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-zhang",
+      "x": 14,
+      "y": 44,
+      "actions": [
+        {
+          "id": "talk-zhang",
+          "type": "talk",
+          "npc": "npc-zhang",
+          "when": {
+            "all": [
+              {
+                "quest_step": [
+                  "q-qh-hemai",
+                  "collect"
+                ]
+              },
+              {
+                "not": {
+                  "flag": "paid.zhang"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "qh-west",
+      "x": 14,
+      "y": 64,
+      "actions": [
+        {
+          "id": "talk-west",
+          "type": "talk",
+          "npc": "npc-west",
+          "when": {
+            "all": [
+              {
+                "quest_step": [
+                  "q-qh-hemai",
+                  "collect"
+                ]
+              },
+              {
+                "not": {
+                  "flag": "paid.west"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "add_edges": [
+    {
+      "id": "e-hut-li",
+      "a": "qh-hut",
+      "b": "qh-li",
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-liu-li",
+      "a": "qh-liu",
+      "b": "qh-li",
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-hut-zhang",
+      "a": "qh-hut",
+      "b": "qh-zhang",
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-mud-west",
+      "a": "qh-mudroad",
+      "b": "qh-west",
+      "when": {
+        "time": "morning"
+      }
+    },
+    {
+      "id": "e-stall-wang",
+      "a": "qh-stall",
+      "b": "qh-wang",
+      "when": {
+        "time": "morning"
+      }
+    }
+  ],
+  "hide_actions": [
+    "talk-boatman",
+    "look-ferry-night",
+    "look-post",
+    "rest",
+    "look-zhou",
+    "watch-barge",
+    "learn-kick"
+  ],
+  "node_actions": {
+    "qh-hut": [
+      {
+        "id": "carve-tallies",
+        "type": "rest",
+        "script": "carve",
+        "label": "carve",
+        "when": {
+          "quest_step": [
+            "q-qh-hemai",
+            "carve"
+          ]
+        }
+      }
+    ],
+    "qh-ferry": [
+      {
+        "id": "look-ferry-layue",
+        "type": "inspect",
+        "inspect": "ferry-layue",
+        "when": {
+          "not": {
+            "flag": "hemai.idea"
+          }
+        }
+      },
+      {
+        "id": "talk-song",
+        "type": "talk",
+        "npc": "npc-song",
+        "when": {
+          "any": [
+            {
+              "all": [
+                {
+                  "quest_step": [
+                    "q-qh-hemai",
+                    "boat"
+                  ]
+                },
+                {
+                  "day_at_least": 10
+                }
+              ]
+            },
+            {
+              "all": [
+                {
+                  "quest_step": [
+                    "q-qh-hemai",
+                    "deliver"
+                  ]
+                },
+                {
+                  "day_at_least": 21
+                }
+              ]
+            },
+            {
+              "quest_step": [
+                "q-qh-hemai",
+                "show"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "talk-boatman-layue",
+        "type": "talk",
+        "npc": "npc-boatman",
+        "when": {
+          "not": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "quest_step": [
+                      "q-qh-hemai",
+                      "boat"
+                    ]
+                  },
+                  {
+                    "day_at_least": 10
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "quest_step": [
+                      "q-qh-hemai",
+                      "deliver"
+                    ]
+                  },
+                  {
+                    "day_at_least": 21
+                  }
+                ]
+              },
+              {
+                "quest_step": [
+                  "q-qh-hemai",
+                  "show"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "qh-zhou": [
+      {
+        "id": "look-zhou-layue",
+        "type": "inspect",
+        "inspect": "zhou-layue"
+      }
+    ]
+  },
+  "node_on_arrive": {
+    "qh-hut": [
+      {
+        "when": {
+          "quest_step": [
+            "q-qh-hemai",
+            "carve"
+          ]
+        },
+        "script": "carve"
+      },
+      {
+        "when": {
+          "all": [
+            {
+              "flag": "hemai.done"
+            },
+            {
+              "not": {
+                "flag": "seen.layue-close"
+              }
+            }
+          ]
+        },
+        "script": "layue-close"
+      }
+    ]
+  },
+  "autos": [
+    {
+      "id": "collected",
+      "when": {
+        "all": [
+          {
+            "quest_step": [
+              "q-qh-hemai",
+              "collect"
+            ]
+          },
+          {
+            "flag": "paid.li"
+          },
+          {
+            "flag": "paid.wang"
+          },
+          {
+            "flag": "paid.zhang"
+          },
+          {
+            "flag": "paid.sun"
+          },
+          {
+            "flag": "paid.zheng"
+          },
+          {
+            "flag": "paid.west"
+          },
+          {
+            "flag": "coin.west.swapped"
+          },
+          {
+            "flag": "coin.wang.swapped"
+          }
+        ]
+      },
+      "script": "collected"
+    }
+  ],
+  "targets": [
+    {
+      "when": {
+        "all": [
+          {
+            "season": "layue"
+          },
+          {
+            "not": {
+              "flag": "hemai.idea"
+            }
+          }
+        ]
+      },
+      "node": "qh-ferry"
+    },
+    {
+      "when": {
+        "all": [
+          {
+            "quest_step": [
+              "q-qh-hemai",
+              "collect"
+            ]
+          },
+          {
+            "flag": "paid.wang"
+          },
+          {
+            "flag": "coin.west.swapped"
+          },
+          {
+            "not": {
+              "flag": "coin.wang.swapped"
+            }
+          }
+        ]
+      },
+      "node": "qh-wang"
+    }
+  ],
+  "quest_hints": [
+    {
+      "when": {
+        "all": [
+          {
+            "season": "layue"
+          },
+          {
+            "not": {
+              "flag": "hemai.idea"
+            }
+          }
+        ]
+      },
+      "ui": "quest.pre_idea"
+    }
+  ]
+}

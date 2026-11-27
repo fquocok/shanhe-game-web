@@ -1,0 +1,1190 @@
+{
+  "schema": "SHANHE_WORLD_COPY_OVERLAY_V0_1",
+  "area_id": "qinghedu",
+  "season": "layue",
+  "chapter_scope": "1-240",
+  "note": "Yuki 定稿與補定稿 2026-11-27 Asia/Taipei。文字自定稿逐字擷取；來源標記只放 note，不上畫面。",
+  "ui": {
+    "pass_days": "過了些日子。",
+    "carve": "刻下一根",
+    "season.layue": "臘月",
+    "day.layue.10": "臘月初十",
+    "day.layue.21": "臘月二十一",
+    "quest.pre_idea": "去渡口看看，年貨是怎麼買的。"
+  },
+  "nodes": {
+    "qh-li": {
+      "label": "李家門口",
+      "blurbs": [
+        {
+          "text": "李家阿婆要白麪二斤，過年蒸饅頭。"
+        }
+      ]
+    },
+    "qh-wang": {
+      "label": "王家門口",
+      "blurbs": [
+        {
+          "text": "王家要鹽三斤、燈油一斤。"
+        }
+      ]
+    },
+    "qh-zhang": {
+      "label": "張嬸家門口",
+      "blurbs": [
+        {
+          "text": "張嬸要紅糖半斤、針一包。"
+        }
+      ]
+    },
+    "qh-west": {
+      "label": "村西老漢家",
+      "blurbs": [
+        {
+          "text": "村西一個老漢。"
+        }
+      ]
+    }
+  },
+  "inspects": {
+    "ferry-layue": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "ferry-layue",
+      "title": "渡口・石階",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "誰家要什麼，就自己跑到渡口，等船來了，攔住船上的人，說「勞駕下回捎兩斤白麪」，再塞一把錢。"
+            },
+            {
+              "text": "十幾家人，一家一家攔，一家一家說，一家一家塞錢。"
+            },
+            {
+              "text": "一個人要兩斤，進貨的人得跑一趟；十個人各要兩斤，合在一起就是二十斤，跑一趟就夠了。"
+            },
+            {
+              "text": "「合起來買。」她自言自語。"
+            }
+          ],
+          "effects": [
+            {
+              "set_flag": "hemai.idea"
+            }
+          ]
+        }
+      },
+      "note": "§5.2〔正文〕第 16 章，刪節。"
+    },
+    "zhou-layue": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "zhou-layue",
+      "title": "周家門口",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "簷下的鍋還熱著。來喝粥的人，說的多半是年貨。"
+            }
+          ]
+        }
+      },
+      "note": "補定稿 §三〔遊戲原創〕。"
+    }
+  },
+  "scripts": {
+    "layue-open": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "layue-open",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "臘月一到，青禾渡的空氣就變了味道。"
+            },
+            {
+              "text": "不是冷的味道，冷早就有了。家家戶戶都在盤算年貨。"
+            },
+            {
+              "text": "孫嫂攤餅的時候盤算：「年三十得蒸一鍋白麪饅頭，今年再窮也得蒸。」"
+            },
+            {
+              "text": "張嬸縫衣裳的時候盤算：「給孩子扯塊布頭做雙新鞋面，過年總不能露著腳趾頭。」"
+            },
+            {
+              "text": "鄭大伯紮茅草的時候盤算：「打兩斤酒。不，一斤。不，還是兩斤。」"
+            },
+            {
+              "text": "阿禾在灶邊添柴，耳朵一樣一樣收進來，心裡默默做了一張表："
+            },
+            {
+              "text": "白麪、紅糖、布頭、針線、燈油、酒、鹽、乾貨。"
+            }
+          ],
+          "advance": "出門",
+          "next": "out"
+        },
+        "out": {
+          "type": "end",
+          "auto_return": true,
+          "effects": [
+            {
+              "set_season": "layue"
+            },
+            {
+              "set_day": 1
+            },
+            {
+              "set_time": "morning"
+            },
+            {
+              "move_to": "qh-hut"
+            }
+          ]
+        }
+      },
+      "note": "§5.1〔正文〕第 16 章，刪節。進入臘月的按鈕「過了些日子。」〔遊戲原創〕在區域圖上。"
+    },
+    "carve": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "carve",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "她坐在茅棚門口削了一下午。"
+            }
+          ],
+          "advance": "刻下一根",
+          "next": "b"
+        },
+        "b": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "一家一根竹簽。簽頭用刀尖刻那家的記號——李家刻一個「李」，王家刻一個「王」；張嬸家刻一隻雞，鄭大伯家刻一捆草。簽身上，刻要的東西，旁邊用碼子刻斤兩。"
+            }
+          ],
+          "advance": "刻下一根",
+          "next": "c"
+        },
+        "c": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "鹽，省成幾筆；糖，照描；麪，也省了。都是照著渡口木牌上的省字描的。"
+            }
+          ],
+          "advance": "刻下一根",
+          "next": "d"
+        },
+        "d": {
+          "type": "dialogue",
+          "lines": [
+            {
+              "text": "十一根竹簽，十一戶人家。她用一根草繩串成一串，像一串帳。"
+            }
+          ],
+          "advance": "串起來",
+          "next": "e"
+        },
+        "e": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "「合買帖，」她宣布，「完成。」"
+            }
+          ],
+          "effects": [
+            {
+              "item_add": {
+                "id": "tally-bundle",
+                "n": 1
+              }
+            }
+          ]
+        }
+      },
+      "note": "§5.3〔正文〕第 16 章，刪節；按鈕〔遊戲原創〕。"
+    },
+    "collected": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "collected",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "十一家收完，她把錢一枚一枚又聽了一遍，裝進一只舊布袋，跟自己胸口那個小布袋分開放。"
+            }
+          ],
+          "effects": [
+            {
+              "set_flag": "hemai.collected"
+            },
+            {
+              "item_add": {
+                "id": "prepaid-bag",
+                "n": 1
+              }
+            },
+            {
+              "set_day": 10
+            }
+          ]
+        }
+      },
+      "note": "§5.4 收齊，〔正文〕第 16 章。收齊後日子到臘月初十。"
+    },
+    "layue-close": {
+      "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+      "id": "layue-close",
+      "title": "阿禾的茅棚",
+      "start": "a",
+      "scenes": {
+        "a": {
+          "type": "end",
+          "lines": [
+            {
+              "text": "那天傍晚，阿禾在灶邊把整件事從頭到尾算了一遍。"
+            },
+            {
+              "text": "「……這一單，」她喃喃道，「賺的是錢，賠的是面子。」"
+            },
+            {
+              "text": "麪子。"
+            },
+            {
+              "text": "她想了想，自己先笑出來了。"
+            }
+          ],
+          "effects": [
+            {
+              "set_flag": "seen.layue-close"
+            }
+          ]
+        }
+      },
+      "note": "§5.10〔正文〕第 16 章，刪節；不報總數。"
+    }
+  },
+  "npcs": {
+    "npc-li": {
+      "name": "李家門口",
+      "talks": [
+        {
+          "id": "li-confess",
+          "when": {
+            "quest_step": [
+              "q-qh-hemai",
+              "li"
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "li-confess",
+            "title": "李家門口",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "李家的老太太接過那個布袋，解開來看了一眼，臉色就變了。"
+                  },
+                  {
+                    "text": "「這是什麼？」"
+                  },
+                  {
+                    "text": "布袋裡，不是白生生的麪粉。是黃褐色的、一片一片的碎屑，聞起來有一股穀殼的味道。麩皮。"
+                  },
+                  {
+                    "text": "「我家要的是白麪，」老太太的聲音有點抖，「過年蒸饅頭的……這是餵雞的東西啊！」"
+                  },
+                  {
+                    "text": "阿禾低頭看那根拴在布袋上的竹簽。扁扁小小的框，加上兩筆長長的腳。看上去，像一個「夫」。"
+                  },
+                  {
+                    "text": "麥加面，是麪。麥加夫，是麩。"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "own",
+                    "label": "「是我刻錯了字。」",
+                    "next": "right"
+                  },
+                  {
+                    "id": "shop",
+                    "label": "「是上游的鋪子裝錯了。」",
+                    "next": "wrong"
+                  },
+                  {
+                    "id": "boat",
+                    "label": "「是船上捎錯了。」",
+                    "next": "wrong"
+                  }
+                ]
+              },
+              "wrong": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "話到嘴邊，她又嚥了回去。竹簽是她自己刻的。"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "own",
+                    "label": "「是我刻錯了字。」",
+                    "next": "right"
+                  },
+                  {
+                    "id": "shop",
+                    "label": "「是上游的鋪子裝錯了。」",
+                    "next": "wrong"
+                  },
+                  {
+                    "id": "boat",
+                    "label": "「是船上捎錯了。」",
+                    "next": "wrong"
+                  }
+                ]
+              },
+              "right": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "「阿婆，對不起。」她說，「是我刻錯了字，害您拿到麩皮。白麪的錢，我賠給您。」"
+                  },
+                  {
+                    "text": "「你……你刻的？」"
+                  },
+                  {
+                    "text": "「嗯。」阿禾抬起頭，把竹簽遞過去，「我照著木牌上的樣子描的，描歪了。」"
+                  },
+                  {
+                    "text": "她從自己胸口的小布袋裡，數出六文錢。一枚一枚，雙手捧著，放進老太太手心。"
+                  },
+                  {
+                    "text": "「年前沒有船了。」她說，「白麪，我去孫嫂那兒問問，她買了五斤，看能不能先勻您二斤。差的那幾斤，開春頭一趟船，我再替孫嫂補上。」"
+                  },
+                  {
+                    "text": "最後，老太太嘆了一口氣，把錢塞回阿禾手裡一半。"
+                  },
+                  {
+                    "text": "「三文就夠了。」她說，「麩皮我也不退了。家裡那幾隻雞，過年也該吃頓好的。」"
+                  },
+                  {
+                    "text": "她轉身進屋，再出來時，手裡多了一把炒豆，往阿禾手心裡一倒。"
+                  },
+                  {
+                    "text": "「拿著，炒得香。下回刻字，慢點刻。」"
+                  }
+                ],
+                "closing": "賠三文。得炒豆一把。",
+                "effects": [
+                  {
+                    "set_flag": "li.apologized"
+                  },
+                  {
+                    "wallet_add": -3
+                  },
+                  {
+                    "item_add": {
+                      "id": "roasted-beans",
+                      "n": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "note": "§5.7〔正文〕第 16 章，刪節；選項〔遊戲原創〕。"
+          }
+        },
+        {
+          "id": "li-pay",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "li-pay",
+            "title": "李家門口",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "「白麪二斤。過年蒸饅頭的。」"
+                  },
+                  {
+                    "text": "阿禾當面報價、當面收錢、當面把竹簽給人家看一眼，再收回來。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "paid.li"
+                  }
+                ]
+              }
+            },
+            "note": "§5.4〔改寫〕。"
+          }
+        }
+      ]
+    },
+    "npc-zhang": {
+      "name": "張嬸家門口",
+      "talks": [
+        {
+          "id": "zhang-pay",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "zhang-pay",
+            "title": "張嬸家門口",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "「紅糖半斤，針一包。」"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "paid.zhang"
+                  }
+                ]
+              }
+            },
+            "note": "§5.4〔改寫〕。"
+          }
+        }
+      ]
+    },
+    "npc-west": {
+      "name": "村西老漢家",
+      "talks": [
+        {
+          "id": "west-coin",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "west-coin",
+            "title": "村西老漢家",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "choice",
+                "lines": [],
+                "choices": [
+                  {
+                    "id": "keep",
+                    "label": "收下",
+                    "next": "keep"
+                  },
+                  {
+                    "id": "flick",
+                    "label": "彈一下聽聽",
+                    "next": "flick"
+                  }
+                ]
+              },
+              "keep": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "錢落進布袋，聲音不太對。她又掏出來。"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "keep",
+                    "label": "收下",
+                    "next": "keep"
+                  },
+                  {
+                    "id": "flick",
+                    "label": "彈一下聽聽",
+                    "next": "flick"
+                  }
+                ]
+              },
+              "flick": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "「噗。」"
+                  },
+                  {
+                    "text": "像一顆悶屁。"
+                  },
+                  {
+                    "text": "老漢看她捏著錢不動，有點不高興：「怎麼，嫌少？」"
+                  },
+                  {
+                    "text": "「阿伯，」阿禾把錢遞回去，雙手捧著，客客氣氣，「這枚不響。上回我收了一枚不響的，被人家退回來，賠了自己的錢。您換一枚給我，好不好？」"
+                  },
+                  {
+                    "text": "老漢愣了一下，接過去自己彈了彈，臉色變了：「哎喲，這是我前些日子在下游集上找回來的零錢……」"
+                  },
+                  {
+                    "text": "他嘟嘟囔囔地從錢袋裡另摸了一枚，這回是「叮」的。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "paid.west"
+                  },
+                  {
+                    "set_flag": "coin.west.swapped"
+                  }
+                ]
+              }
+            },
+            "note": "§5.4 第一枚不響的錢〔正文〕第 16 章；選項〔遊戲原創〕。"
+          }
+        }
+      ]
+    },
+    "npc-wang": {
+      "name": "王家門口",
+      "talks": [
+        {
+          "id": "wang-coin",
+          "when": {
+            "all": [
+              {
+                "flag": "coin.west.swapped"
+              },
+              {
+                "not": {
+                  "flag": "coin.wang.swapped"
+                }
+              }
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "wang-coin",
+            "title": "王家門口",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "choice",
+                "lines": [],
+                "choices": [
+                  {
+                    "id": "keep",
+                    "label": "收下",
+                    "next": "keep"
+                  },
+                  {
+                    "id": "flick",
+                    "label": "彈一下聽聽",
+                    "next": "flick"
+                  }
+                ]
+              },
+              "keep": {
+                "type": "choice",
+                "lines": [
+                  {
+                    "text": "錢落進布袋，聲音不太對。她又掏出來。"
+                  }
+                ],
+                "choices": [
+                  {
+                    "id": "keep",
+                    "label": "收下",
+                    "next": "keep"
+                  },
+                  {
+                    "id": "flick",
+                    "label": "彈一下聽聽",
+                    "next": "flick"
+                  }
+                ]
+              },
+              "flick": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "「噗。」"
+                  },
+                  {
+                    "text": "阿禾如法炮製。這回付錢的大嬸還反過來謝她：「多虧你這丫頭耳朵靈，不然我還不知道手上有這種錢！」"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "paid.wang"
+                  },
+                  {
+                    "set_flag": "coin.wang.swapped"
+                  }
+                ]
+              }
+            },
+            "note": "§5.4 第二枚不響的錢，王家大嬸〔遊戲原創〕歸屬；只在換過村西老漢那一枚之後。"
+          }
+        },
+        {
+          "id": "wang-pay",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "wang-pay",
+            "title": "王家門口",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "阿禾當面報價、當面收錢、當面把竹簽給人家看一眼，再收回來。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "set_flag": "paid.wang"
+                  }
+                ]
+              }
+            },
+            "note": "§5.4 先到王家：只收鹽和燈油的好錢，不觸發不響。"
+          }
+        }
+      ]
+    },
+    "npc-song": {
+      "name": "渡口・石階",
+      "talks": [
+        {
+          "id": "song-boat",
+          "when": {
+            "quest_step": [
+              "q-qh-hemai",
+              "boat"
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "song-boat",
+            "title": "渡口・石階",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "dialogue",
+                "lines": [
+                  {
+                    "text": "宋二掌櫃的船，是臘月初十到的。"
+                  },
+                  {
+                    "text": "「大叔，」她說，「這是十一家的年貨。合在一起，一趟捎回來。」"
+                  },
+                  {
+                    "text": "宋二掌櫃低頭看看那串竹簽，又抬頭看看她。看到鄭大伯那根簽上被追加的一道，他乾脆笑出聲來。"
+                  },
+                  {
+                    "text": "「老鄭的酒，」他說，「到底是一斤還是兩斤？」"
+                  },
+                  {
+                    "text": "「兩斤。」阿禾說，「最後一次確認是兩斤。」"
+                  },
+                  {
+                    "text": "「你數過了？」"
+                  },
+                  {
+                    "text": "「數過了，也聽過了。」阿禾說，「兩枚不響的，換掉了。」"
+                  },
+                  {
+                    "text": "「合在一塊兒買，上游的鋪子給的價錢低。」他說，「省下來的，一家分一點，你也拿一點。下趟船，年前最後一趟，貨一起到。」"
+                  },
+                  {
+                    "text": "船開的時候，他站在船頭，像是隨口說了一句：「今年白麪也貴。米漲，麪就跟著漲。上游幾處倉，說是要等開春再出貨。」"
+                  }
+                ],
+                "advance": "等下一趟船",
+                "next": "out"
+              },
+              "out": {
+                "type": "end",
+                "auto_return": true,
+                "effects": [
+                  {
+                    "item_remove": {
+                      "id": "tally-bundle",
+                      "n": 1
+                    }
+                  },
+                  {
+                    "item_remove": {
+                      "id": "prepaid-bag",
+                      "n": 1
+                    }
+                  },
+                  {
+                    "set_flag": "hemai.handed"
+                  },
+                  {
+                    "set_day": 21
+                  }
+                ]
+              }
+            },
+            "note": "§5.5〔正文〕第 16 章，刪節；按鈕〔遊戲原創〕。"
+          }
+        },
+        {
+          "id": "song-deliver",
+          "when": {
+            "quest_step": [
+              "q-qh-hemai",
+              "deliver"
+            ]
+          },
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "song-deliver",
+            "title": "渡口・石階",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "年前最後一趟船，是臘月二十一到的。"
+                  },
+                  {
+                    "text": "白麪是用布袋裝的，紅糖是用油紙包的，鹽是一個小麻袋，燈油裝在一只陶罐裡，酒——鄭大伯的兩斤酒——裝在一只葫蘆裡。每一包上頭，都拴著她刻的那根竹簽。"
+                  },
+                  {
+                    "text": "宋二掌櫃果然在價錢上讓了一點。她把省下的錢一家一家退回去，人家都要愣一下：「還有找的？」"
+                  },
+                  {
+                    "text": "「合在一起買，」阿禾說，「比較便宜。」"
+                  }
+                ],
+                "closing": "抽成十一文。",
+                "effects": [
+                  {
+                    "set_flag": "hemai.delivered"
+                  },
+                  {
+                    "wallet_add": 11
+                  }
+                ]
+              }
+            },
+            "note": "§5.6〔正文〕第 16 章，刪節；末句〔改寫〕。"
+          }
+        },
+        {
+          "id": "song-show",
+          "when": {},
+          "script": {
+            "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+            "id": "song-show",
+            "title": "渡口・石階",
+            "start": "a",
+            "scenes": {
+              "a": {
+                "type": "end",
+                "lines": [
+                  {
+                    "text": "阿禾跑去給宋二掌櫃看那根刻錯的竹簽。"
+                  },
+                  {
+                    "text": "宋二掌櫃接過那根竹簽，看了一眼簽上那個歪歪扭扭的字，什麼都沒說。看了好一會兒，他把竹簽翻過來，用指甲在那個字的右邊輕輕劃了一道。"
+                  },
+                  {
+                    "text": "「面字，」他說，「是個框，框裡兩橫，底下兩腳要收。你這個框太小，腳又太長，就成了夫。」"
+                  },
+                  {
+                    "text": "他把竹簽遞回來。"
+                  },
+                  {
+                    "text": "「夫字，可吃不得。」"
+                  },
+                  {
+                    "text": "說完，他就轉身上船了。"
+                  },
+                  {
+                    "text": "阿禾捏著那根竹簽，站在岸上，把竹簽小心地收進懷裡。"
+                  }
+                ],
+                "effects": [
+                  {
+                    "item_add": {
+                      "id": "wrong-tally",
+                      "n": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "note": "§5.9〔正文〕第 16 章，刪節。"
+          }
+        }
+      ]
+    }
+  },
+  "npc_prepend": {
+    "npc-sun": [
+      {
+        "id": "sun-share",
+        "when": {
+          "quest_step": [
+            "q-qh-hemai",
+            "sun"
+          ]
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "sun-share",
+          "title": "村口・孫嫂餅攤",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "孫嫂聽說了，二話沒說，就從自己那五斤白麪裡勻了二斤出來，給李家送去。"
+                },
+                {
+                  "text": "「我那饅頭少蒸兩籠罷了。」她叉著腰說，「開春你可得給我補回來，一兩都不能少！」"
+                },
+                {
+                  "text": "「一兩都不少。」阿禾說，「我刻在竹簽上。」"
+                },
+                {
+                  "text": "「你還敢刻？」"
+                },
+                {
+                  "text": "「這回慢點刻。」"
+                },
+                {
+                  "text": "孫嫂笑得直拍大腿。"
+                }
+              ],
+              "effects": [
+                {
+                  "set_flag": "sun.shared"
+                }
+              ]
+            }
+          },
+          "note": "§5.8〔正文〕第 16 章。"
+        }
+      },
+      {
+        "id": "sun-pay",
+        "when": {
+          "all": [
+            {
+              "quest_step": [
+                "q-qh-hemai",
+                "collect"
+              ]
+            },
+            {
+              "not": {
+                "flag": "paid.sun"
+              }
+            }
+          ]
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "sun-pay",
+          "title": "村口・孫嫂餅攤",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "「白麪五斤。我要蒸的饅頭，比誰家都多。」"
+                }
+              ],
+              "effects": [
+                {
+                  "set_flag": "paid.sun"
+                }
+              ]
+            }
+          },
+          "note": "§5.4〔改寫〕。"
+        }
+      },
+      {
+        "id": "sun-layue",
+        "when": {
+          "season": "layue"
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "sun-layue",
+          "title": "村口・孫嫂餅攤",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "「年三十得蒸一鍋白麪饅頭，今年再窮也得蒸。」孫嫂頭也不抬，「去去，別擋著。」"
+                }
+              ]
+            }
+          },
+          "note": "補定稿 §四〔正文〕＋〔遊戲原創〕。"
+        }
+      }
+    ],
+    "npc-zheng": [
+      {
+        "id": "zheng-pay",
+        "when": {
+          "all": [
+            {
+              "quest_step": [
+                "q-qh-hemai",
+                "collect"
+              ]
+            },
+            {
+              "not": {
+                "flag": "paid.zheng"
+              }
+            }
+          ]
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "zheng-pay",
+          "title": "鄭大伯門檻",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "鄭大伯要酒兩斤，到了門口又改成一斤，阿禾刻好了一斤，鄭大伯又追出來改成兩斤，阿禾只好在「一」旁邊又劃了一道。"
+                }
+              ],
+              "effects": [
+                {
+                  "set_flag": "paid.zheng"
+                }
+              ]
+            }
+          },
+          "note": "§5.4〔正文〕第 16 章。"
+        }
+      },
+      {
+        "id": "zheng-layue-after",
+        "when": {
+          "all": [
+            {
+              "season": "layue"
+            },
+            {
+              "flag": "paid.zheng"
+            }
+          ]
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "zheng-layue-after",
+          "title": "鄭大伯門檻",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "「兩斤就兩斤。」鄭大伯捋了捋下巴，「你那竹簽上可別再改了。」"
+                }
+              ]
+            }
+          },
+          "note": "補定稿 §四〔遊戲原創〕。"
+        }
+      },
+      {
+        "id": "zheng-layue",
+        "when": {
+          "season": "layue"
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "zheng-layue",
+          "title": "鄭大伯門檻",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "鄭大伯坐在門檻上紮茅草，低著頭：「打兩斤酒。不，一斤。不，還是兩斤。」"
+                }
+              ]
+            }
+          },
+          "note": "補定稿 §四〔正文〕第 16 章。"
+        }
+      }
+    ],
+    "npc-boatman": [
+      {
+        "id": "boatman-layue",
+        "when": {
+          "season": "layue"
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "boatman-layue",
+          "title": "渡口・石階",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "老艄公把菸桿在石階上磕了磕。"
+                },
+                {
+                  "text": "「年下船少，」他說，「要等，就自己蹲著。」"
+                }
+              ]
+            }
+          },
+          "note": "補定稿 §四〔遊戲原創〕。"
+        }
+      }
+    ],
+    "npc-liu": [
+      {
+        "id": "liu-layue",
+        "when": {
+          "season": "layue"
+        },
+        "script": {
+          "schema": "SHANHE_EVENT_SCRIPT_V0_1",
+          "id": "liu-layue",
+          "title": "劉大娘家門口",
+          "start": "a",
+          "scenes": {
+            "a": {
+              "type": "end",
+              "lines": [
+                {
+                  "text": "「過年近了，早點回家。」劉大娘說，「別往江邊跑。」"
+                }
+              ]
+            }
+          },
+          "note": "補定稿 §四〔遊戲原創〕。"
+        }
+      }
+    ]
+  },
+  "blurb_prepend": {
+    "qh-hut": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "灶邊還有熱氣。臘月到了。"
+      }
+    ],
+    "qh-liu": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "門開著。大娘在巷裡跟人說話。"
+      }
+    ],
+    "qh-zhou": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "簷下有人捧著碗，說的卻是年貨。"
+      }
+    ],
+    "qh-stall": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "鏊子冒煙了。攤上在說年貨。"
+      }
+    ],
+    "qh-zheng": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "門檻上有一捆茅草。大伯又在盤算什麼。"
+      }
+    ],
+    "qh-ferry": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "石階上人比往日多，都在等船。"
+      }
+    ],
+    "qh-shed": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "老艄公的草棚。裡面有旱菸的味道。"
+      }
+    ],
+    "qh-mudroad": [
+      {
+        "when": {
+          "season": "layue"
+        },
+        "text": "路還是那條路。風裡有點烤餅的味道。"
+      }
+    ]
+  },
+  "events": {},
+  "quests": {
+    "q-qh-hemai": {
+      "title": "合買帖",
+      "steps": {
+        "carve": "一家一根竹簽，刻上要的東西和斤兩。",
+        "collect": "一家一家收錢，當面給人家看一眼竹簽。",
+        "boat": "臘月初十，宋二掌櫃的船到渡口。",
+        "deliver": "年前最後一趟船到了。一包一包對過去，一家一家送。",
+        "li": "李家阿婆臉色變了。去李家，把話說清楚。",
+        "sun": "去孫嫂那兒問問，看能不能先勻二斤白麪。",
+        "show": "把刻錯的竹簽拿給宋二掌櫃看。"
+      },
+      "done_line": "「面字，框要大，腳要收。」"
+    }
+  }
+}

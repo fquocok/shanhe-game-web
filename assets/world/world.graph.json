@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_REGION_GRAPH_V0_1",
+  "enabled": true,
+  "channels": [
+    "private",
+    "public"
+  ],
+  "chapter_scope": "1-240",
+  "note": "大地圖第 3 步：只開青禾渡。只在私人頻道開（world.js featureEnabled）。點名與短注在 world.copy.json（由 build_bigmap_copy.py 自 Yuki 定稿產生）。路程為遊戲推估：石碑到集鎮半日是〔正文〕第 40 章。",
+  "start_region": "r-qinghedu",
+  "regions": [
+    {
+      "id": "r-qinghedu",
+      "x": 30,
+      "y": 80,
+      "area": "qinghedu"
+    },
+    {
+      "id": "r-fork",
+      "x": 40,
+      "y": 62,
+      "locked": true
+    },
+    {
+      "id": "r-stele",
+      "x": 52,
+      "y": 44,
+      "locked": true
+    },
+    {
+      "id": "r-jizhen",
+      "x": 34,
+      "y": 28,
+      "locked": true
+    },
+    {
+      "id": "r-kuaidao",
+      "x": 56,
+      "y": 10,
+      "locked": true
+    }
+  ],
+  "routes": [
+    {
+      "id": "rt-qh-fork",
+      "a": "r-qinghedu",
+      "b": "r-fork",
+      "half_days": 1
+    },
+    {
+      "id": "rt-fork-stele",
+      "a": "r-fork",
+      "b": "r-stele",
+      "half_days": 1
+    },
+    {
+      "id": "rt-stele-jizhen",
+      "a": "r-stele",
+      "b": "r-jizhen",
+      "half_days": 1
+    },
+    {
+      "id": "rt-jizhen-kuaidao",
+      "a": "r-jizhen",
+      "b": "r-kuaidao",
+      "half_days": 1
+    }
+  ],
+  "copy_src": "world/world.copy.json",
+  "overlays": [
+    {
+      "area": "qinghedu",
+      "patch_src": "world/qinghedu.layue.patch.json",
+      "copy_src": "world/qinghedu.layue.copy.json",
+      "quests_src": "world/qinghedu.layue.quests.json"
+    }
+  ]
+}

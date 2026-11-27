@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "contract": "SHANHE_QUEST_V0_1",
+  "enabled": true,
+  "note": "「合買帖」任務邏輯（〔正文〕第 16 章）。提示字在 qinghedu.layue.copy.json。",
+  "quests": [
+    {
+      "id": "q-qh-hemai",
+      "starts_when": {
+        "all": [
+          {
+            "quest_done": "q-qh-tokens"
+          },
+          {
+            "season": "layue"
+          },
+          {
+            "flag": "hemai.idea"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "carve",
+          "target_node": "qh-hut",
+          "done_when": {
+            "has_item": "tally-bundle"
+          }
+        },
+        {
+          "id": "collect",
+          "done_when": {
+            "flag": "hemai.collected"
+          }
+        },
+        {
+          "id": "boat",
+          "target_node": "qh-ferry",
+          "done_when": {
+            "flag": "hemai.handed"
+          }
+        },
+        {
+          "id": "deliver",
+          "target_node": "qh-ferry",
+          "done_when": {
+            "flag": "hemai.delivered"
+          }
+        },
+        {
+          "id": "li",
+          "target_node": "qh-li",
+          "done_when": {
+            "flag": "li.apologized"
+          }
+        },
+        {
+          "id": "sun",
+          "target_node": "qh-stall",
+          "done_when": {
+            "flag": "sun.shared"
+          }
+        },
+        {
+          "id": "show",
+          "target_node": "qh-ferry",
+          "done_when": {
+            "has_item": "wrong-tally"
+          }
+        }
+      ],
+      "on_complete": [
+        {
+          "set_flag": "hemai.done"
+        }
+      ]
+    }
+  ]
+}

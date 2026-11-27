@@ -1,10 +1,12 @@
 (() => {
   const KEY = "shanhe.save.v1";
-  const SCHEMA_VERSION = 2;
+  const SCHEMA_VERSION = 3;
   const GAME_ID = "shanhe";
 
   // 第 3 期：青禾渡區域圖的預設位置與布袋起始文數（第 15 章結尾她布袋裡三十文，遊戲推估）。
   const WORLD_DEFAULTS = { area: "qinghedu", node: "qh-hut", time: "night" };
+  // 大地圖第 3 步（存檔 v3）：所在區域、第幾天、時節 id。時節 null 表示第 3 期切片本身（十二年秋）。
+  const WORLD_V3_DEFAULTS = { region: "qinghedu", day: 1, season: null };
   const WALLET_START = 30;
 
   function newExploreSeed() {
@@ -12,7 +14,7 @@
   }
 
   function emptyWorld() {
-    return { ...WORLD_DEFAULTS, explore_seed: newExploreSeed(), step_count: 0 };
+    return { ...WORLD_DEFAULTS, ...WORLD_V3_DEFAULTS, explore_seed: newExploreSeed(), step_count: 0 };
   }
 
   function isObj(value) {
@@ -47,6 +49,15 @@
       next.schema_version = 2;
       return next;
     },
+    3: (save) => {
+      // 只補預設值，不動任何進度。
+      const next = { ...save };
+      const w = isObj(save.world) ? save.world : {};
+      next.world = { ...w, ...WORLD_V3_DEFAULTS, region: w.area || WORLD_V3_DEFAULTS.region };
+      next.inventory = {};
+      next.schema_version = 3;
+      return next;
+    },
   };
 
   function nowIso() {
@@ -70,6 +81,7 @@
       quests: {},
       flags: {},
       wallet: { wen: WALLET_START },
+      inventory: {},
     };
   }
 
@@ -84,6 +96,17 @@
       explore_seed: Number.isFinite(seed) && seed > 0 ? Math.floor(seed) : newExploreSeed(),
       step_count: Math.max(0, Math.floor(Number(w.step_count) || 0)),
     };
+    if (Number(save.schema_version) >= 3) {
+      save.world.region = typeof w.region === "string" && w.region ? w.region : WORLD_V3_DEFAULTS.region;
+      save.world.day = Math.max(1, Math.floor(Number(w.day) || 1));
+      save.world.season = typeof w.season === "string" && w.season ? w.season : null;
+      if (!isObj(save.inventory)) save.inventory = {};
+      else {
+        const inv = {};
+        Object.entries(save.inventory).forEach(([k, v]) => { const n = Math.floor(Number(v) || 0); if (n > 0) inv[k] = n; });
+        save.inventory = inv;
+      }
+    }
     if (!isObj(save.quests)) save.quests = {};
     if (!isObj(save.flags)) save.flags = {};
     if (!isObj(save.wallet) || !Number.isFinite(Number(save.wallet.wen))) save.wallet = { wen: WALLET_START };

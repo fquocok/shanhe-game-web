@@ -1,0 +1,37 @@
+{
+  "schema": "SHANHE_REGION_COPY_V0_1",
+  "chapter_scope": "1-240",
+  "note": "Yuki 定稿與補定稿 2026-11-27 Asia/Taipei。文字自定稿逐字擷取；來源標記只放 note，不上畫面。",
+  "ui": {
+    "bigmap": "大地圖",
+    "back_area": "回青禾渡",
+    "half_day": "走過去要半日。",
+    "one_day": "走過去要一日。",
+    "locked_text": "還不到走的時候。",
+    "locked": "未開放",
+    "walk": "走過去",
+    "quest_bar": "眼下的事"
+  },
+  "regions": {
+    "r-qinghedu": {
+      "label": "青禾渡",
+      "note": "渡口、周家、劉大娘家、孫嫂的餅攤。"
+    },
+    "r-fork": {
+      "label": "官道分岔",
+      "note": "順著驛道走，別抄江邊，春水滑。"
+    },
+    "r-stele": {
+      "label": "鹿形石碑",
+      "note": "見鹿形石碑轉西，半日到集鎮。"
+    },
+    "r-jizhen": {
+      "label": "天鹿山腳集鎮",
+      "note": "門額歪掛「鹿鳴居」三字。"
+    },
+    "r-kuaidao": {
+      "label": "快刀門",
+      "note": "過石橋，上坡，聞見鐵味就到。"
+    }
+  }
+}

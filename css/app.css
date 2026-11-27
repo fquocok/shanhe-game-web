@@ -1333,3 +1333,16 @@ body { min-height: 100dvh; }
   .world-token { transition: none; }
   .world-quest-text.flash { animation: none; }
 }
+
+/* 大地圖第 3 步：日子一行、大地圖模式 */
+.world-day {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-kai);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--paper-aged);
+}
+.world-sheet.is-region .world-river { display: none; }
+.world-sheet.is-region .world-node-label { font-size: 0.9rem; }
+
+.world-quest[hidden] { display: none; }

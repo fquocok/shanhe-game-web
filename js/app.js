@@ -864,7 +864,10 @@
       if (window.ShanheSave) window.ShanheSave.reset();
       if (window.ShanheMap) window.ShanheMap.render();
       close();
-      if (window.ShanheWorldMap) window.ShanheWorldMap.resetView();
+      if (window.ShanheWorldMap) {
+        window.ShanheWorldMap.resetView();
+        window.ShanheWorldMap.resetMode();
+      }
       if (worldReady && $("world-screen") && !$("world-screen").hidden) window.ShanheWorldMap.show();
     };
     no.onclick = close;
@@ -903,6 +906,7 @@
     };
   }
   if ($("btn-world-stages")) $("btn-world-stages").onclick = () => showMap();
+  if ($("btn-world-bigmap")) $("btn-world-bigmap").onclick = () => window.ShanheWorldMap && window.ShanheWorldMap.toggleRegion();
   if ($("btn-world-reset")) $("btn-world-reset").onclick = () => confirmReset();
   if ($("btn-map-world")) $("btn-map-world").onclick = () => showWorld();
   if ($("event-action")) $("event-action").onclick = () => window.ShanheEvent && window.ShanheEvent.advance();
@@ -913,13 +917,41 @@
       if (!res.ok) throw new Error("區域圖載入失敗：" + path);
       return res.json();
     });
+    // 大地圖第 3 步：大地圖與臘月補丁。只在私人頻道、且 world.graph.json enabled 時才用（見 mountWorld）。
+    const loadBig = () => get("world/world.graph.json").then((graph) => {
+      if (!graph || graph.enabled !== true) return null;
+      const ov = (graph.overlays || [])[0] || null;
+      return Promise.all([
+        get(graph.copy_src),
+        ov ? get(ov.patch_src) : null,
+        ov ? get(ov.copy_src) : null,
+        ov ? get(ov.quests_src) : null,
+      ]).then(([copy, patch, layueCopy, layueQuests]) => ({ graph, copy, patch, layueCopy, layueQuests }));
+    }).catch(() => null);
     return get("world/qinghedu.map.json").then((map) => Promise.all([
-      get(map.copy_src), get(map.quests_src), get(map.encounters_src),
-    ]).then(([copy, quests, encounters]) => ({ map, copy, quests, encounters })))
+      get(map.copy_src), get(map.quests_src), get(map.encounters_src), loadBig(),
+    ]).then(([copy, quests, encounters, bigmap]) => ({ map, copy, quests, encounters, bigmap })))
       .catch((error) => {
         console.error(error);
         return null;
       });
+  }
+
+  /** 組出區域圖要用的資料；大地圖只在私人頻道開。 */
+  function worldData(world, manifest, channel) {
+    const W = window.ShanheWorld;
+    const b = world.bigmap;
+    if (!b || !W || !W.featureEnabled(b.graph, channel)) {
+      return { map: world.map, copy: world.copy, quests: world.quests, encounters: world.encounters, manifest, bigmap: null };
+    }
+    return {
+      map: world.map,
+      copy: W.mergeCopy(world.copy, b.layueCopy),
+      quests: W.mergeQuests(world.quests, b.layueQuests),
+      encounters: world.encounters,
+      manifest,
+      bigmap: { graph: b.graph, copy: b.copy, patch: b.patch },
+    };
   }
 
   const bootStarted = performance.now();
@@ -949,7 +981,7 @@
     if (world && window.ShanheWorldMap) {
       try {
         window.ShanheWorldMap.mount({
-          data: { ...world, manifest },
+          data: worldData(world, manifest, versionInfo.channel),
           hooks: { showScreen, setHash, enterStage, showFatal },
         });
         worldReady = true;
